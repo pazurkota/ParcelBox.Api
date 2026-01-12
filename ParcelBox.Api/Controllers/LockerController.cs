@@ -18,7 +18,8 @@ public class LockerController(IRepository<Locker> repository)
             Code = locker.Code,
             Address = locker.Address,
             City = locker.City,
-            LockerBoxes = locker.LockerBoxes
+            LockerBoxes = locker.LockerBoxes,
+            PostalCode = locker.PostalCode
         }));
     }
 
@@ -34,7 +35,8 @@ public class LockerController(IRepository<Locker> repository)
             Code = locker.Code,
             Address = locker.Address,
             City = locker.Code,
-            LockerBoxes = locker.LockerBoxes
+            LockerBoxes = locker.LockerBoxes,
+            PostalCode = locker.PostalCode
         });
     }
 }

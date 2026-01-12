@@ -7,6 +7,7 @@ public class Locker
     public required string Code { get; set; }
     public required string Address { get; set; }
     public required string City { get; set; }
+    public required string PostalCode { get; set; }
 
     public LockerBox[] LockerBoxes { get; set; } = [];
 }
