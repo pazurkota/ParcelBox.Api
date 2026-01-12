@@ -1,4 +1,4 @@
-﻿namespace ParcelBox.Api.Dtos.LockerBox;
+﻿namespace ParcelBox.Api.Dtos.Locker;
 
 public class GetLockerResponse
 {
