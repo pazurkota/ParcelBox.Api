@@ -5,28 +5,38 @@ namespace ParcelBox.Api.Repositories;
 
 public class LockerRepository : IRepository<Locker>
 {
-    public List<Locker> GetAll()
+    private readonly List<Locker> _lockers = new();
+    
+    public IEnumerable<Locker> GetAll()
     {
-        throw new NotImplementedException();
+        return _lockers;
     }
 
-    public Locker GetById(int id)
+    public Locker? GetById(int id)
     {
-        throw new NotImplementedException();
+        return _lockers.FirstOrDefault(x => x.Id == id);
     }
 
     public void Create(Locker entity)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+
+        entity.Id = _lockers.Select(e => e.Id).DefaultIfEmpty(0).Max() + 1;
+        _lockers.Add(entity);
     }
 
     public void Update(Locker entity)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+
+        var locker = _lockers.FirstOrDefault(x => x.Id == entity.Id);
+        locker?.LockerBoxes = entity.LockerBoxes;
     }
 
     public void Delete(Locker entity)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(entity);
+
+        _lockers.Remove(entity);
     }
 }
