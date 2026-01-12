@@ -5,7 +5,42 @@ namespace ParcelBox.Api.Repositories;
 
 public class LockerRepository : IRepository<Locker>
 {
-    private readonly List<Locker> _lockers = new();
+    private readonly List<Locker> _lockers = new()
+    {
+        new Locker
+        {
+            Id = 1,
+            Address = "1400 Defense Pentagon",
+            City = "Washington DC 20301",
+            Code = "WAS-001",
+            LockerBoxes =
+            [
+                new LockerBox
+                {
+                    Id = 1,
+                    LockerSize = nameof(LockerSize.Small),
+                    IsOccupied = false,
+                    LockerId = 1
+                },
+                
+                new LockerBox
+                {
+                    Id = 2,
+                    LockerSize = nameof(LockerSize.Medium),
+                    IsOccupied = false,
+                    LockerId = 1
+                },
+                
+                new LockerBox
+                {
+                    Id = 3,
+                    LockerSize = nameof(LockerSize.Big),
+                    IsOccupied = false,
+                    LockerId = 1
+                }
+            ]
+        }
+    };
     
     public IEnumerable<Locker> GetAll()
     {
