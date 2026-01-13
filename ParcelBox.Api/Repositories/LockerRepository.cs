@@ -11,8 +11,8 @@ public class LockerRepository : IRepository<Locker>
         {
             Id = 1,
             Address = "1400 Defense Pentagon",
-            City = "Washington",
-            PostalCode = "DC 20301",
+            City = "Washington DC",
+            PostalCode = "20301 USA",
             Code = "WAS-001",
             LockerBoxes =
             [
