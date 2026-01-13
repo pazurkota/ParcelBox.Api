@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParcelBox.Api", "ParcelBox.Api\ParcelBox.Api.csproj", "{93FCF404-44C9-4721-A387-AD02FBAACE5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParcelBox.Api.Tests", "ParcelBox.Api.Tests\ParcelBox.Api.Tests.csproj", "{DAA332C0-CDCF-409B-B907-1EEDAEABFEDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{93FCF404-44C9-4721-A387-AD02FBAACE5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93FCF404-44C9-4721-A387-AD02FBAACE5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93FCF404-44C9-4721-A387-AD02FBAACE5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAA332C0-CDCF-409B-B907-1EEDAEABFEDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAA332C0-CDCF-409B-B907-1EEDAEABFEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAA332C0-CDCF-409B-B907-1EEDAEABFEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAA332C0-CDCF-409B-B907-1EEDAEABFEDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
