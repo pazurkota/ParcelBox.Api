@@ -55,7 +55,7 @@ public class LockerController(IRepository<Locker> repository)
         return Created($"/locker/{newLocker.Id}", lockerDto);
     }
 
-    [HttpPut("{id:int}/boxes")]
+    [HttpPatch("{id:int}/boxes")]
     public IActionResult CreateLockerBoxes(int id, [FromBody] CreateLockerBoxDto[] lockerBoxDtos)
     {
         var existingLocker = repository.GetById(id);
