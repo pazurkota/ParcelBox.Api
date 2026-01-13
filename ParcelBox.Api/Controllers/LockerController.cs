@@ -40,7 +40,7 @@ public class LockerController(IRepository<Locker> repository)
         });
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public IActionResult CreateLocker([FromBody] CreateLockerDto lockerDto)
     {
         Locker newLocker = new()
@@ -53,5 +53,25 @@ public class LockerController(IRepository<Locker> repository)
         
         repository.Create(newLocker);
         return Created($"/locker/{newLocker.Id}", lockerDto);
+    }
+
+    [HttpPut("{id:int}/boxes")]
+    public IActionResult CreateLockerBoxes(int id, [FromBody] CreateLockerBoxDto[] lockerBoxDtos)
+    {
+        var existingLocker = repository.GetById(id);
+        if (existingLocker == null) return NotFound();
+
+        foreach (var boxDto in lockerBoxDtos)
+        {
+            existingLocker.LockerBoxes.Add(new LockerBox()
+            {
+                Id = existingLocker.LockerBoxes.Count + 1,
+                IsOccupied = false,
+                LockerId = existingLocker.Id,
+                LockerSize = boxDto.LockerSize
+            });
+        }
+
+        return Created($"/locker/{existingLocker.Id}", lockerBoxDtos);
     }
 }

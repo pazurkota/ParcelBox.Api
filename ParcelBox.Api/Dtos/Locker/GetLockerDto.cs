@@ -1,4 +1,6 @@
-﻿namespace ParcelBox.Api.Dtos.Locker;
+﻿using ParcelBox.Api.Model;
+
+namespace ParcelBox.Api.Dtos.Locker;
 
 public class GetLockerDto
 {
@@ -7,5 +9,5 @@ public class GetLockerDto
     public required string City { get; set; }
     public required string PostalCode { get; set; }
 
-    public Model.LockerBox[] LockerBoxes { get; set; } = [];
+    public List<LockerBox> LockerBoxes { get; set; } = [];
 }

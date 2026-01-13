@@ -5,7 +5,8 @@ namespace ParcelBox.Api.Repositories;
 
 public class LockerRepository : IRepository<Locker>
 {
-    private readonly List<Locker> _lockers = new() // yup, I used pentagon address because why not?
+    // yup, I used pentagon address because why not?
+    private readonly List<Locker> _lockers = new() 
     {
         new Locker
         {
@@ -14,7 +15,7 @@ public class LockerRepository : IRepository<Locker>
             City = "Washington DC",
             PostalCode = "20301 USA",
             Code = "WAS-001",
-            LockerBoxes =
+            LockerBoxes = 
             [
                 new LockerBox
                 {

@@ -9,5 +9,5 @@ public class Locker
     public required string City { get; set; }
     public required string PostalCode { get; set; }
 
-    public LockerBox[] LockerBoxes { get; set; } = [];
+    public List<LockerBox> LockerBoxes { get; set; } = [];
 }
