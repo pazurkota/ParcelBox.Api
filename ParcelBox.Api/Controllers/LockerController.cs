@@ -13,7 +13,7 @@ public class LockerController(IRepository<Locker> repository)
     {
         var lockers = repository.GetAll();
         
-        return Ok(lockers.Select(locker => new GetLockerResponse
+        return Ok(lockers.Select(locker => new GetLockerDto
         {
             Code = locker.Code,
             Address = locker.Address,
@@ -30,7 +30,7 @@ public class LockerController(IRepository<Locker> repository)
 
         if (locker == null) return NotFound();
 
-        return Ok(new GetLockerResponse
+        return Ok(new GetLockerDto
         {
             Code = locker.Code,
             Address = locker.Address,
@@ -38,5 +38,20 @@ public class LockerController(IRepository<Locker> repository)
             LockerBoxes = locker.LockerBoxes,
             PostalCode = locker.PostalCode
         });
+    }
+
+    [HttpPost]
+    public IActionResult CreateLocker([FromBody] CreateLockerDto lockerDto)
+    {
+        Locker newLocker = new()
+        {
+            Code = lockerDto.Code,
+            Address = lockerDto.Address,
+            City = lockerDto.City,
+            PostalCode = lockerDto.PostalCode
+        };
+        
+        repository.Create(newLocker);
+        return Created($"/locker/{newLocker.Id}", lockerDto);
     }
 }

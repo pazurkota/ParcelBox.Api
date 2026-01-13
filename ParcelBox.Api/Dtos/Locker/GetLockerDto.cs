@@ -1,6 +1,6 @@
 ﻿namespace ParcelBox.Api.Dtos.Locker;
 
-public class GetLockerResponse
+public class GetLockerDto
 {
     public required string Code { get; set; }
     public required string Address { get; set; }
