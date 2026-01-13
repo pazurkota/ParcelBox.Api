@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Controllers;
 
-public class LockerController(IRepository<Locker> repository) 
+public class LockersController(IRepository<Locker> repository) 
     : BaseController
 {
     [HttpGet]
