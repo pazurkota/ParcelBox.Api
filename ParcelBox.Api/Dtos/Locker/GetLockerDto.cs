@@ -1,9 +1,9 @@
-﻿namespace ParcelBox.Api.Model;
+﻿using ParcelBox.Api.Model;
 
-public class Locker
+namespace ParcelBox.Api.Dtos.Locker;
+
+public class GetLockerDto
 {
-    public int Id { get; set; }
-    
     public required string Code { get; set; }
     public required string Address { get; set; }
     public required string City { get; set; }
