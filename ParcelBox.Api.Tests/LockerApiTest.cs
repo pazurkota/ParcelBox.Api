@@ -11,12 +11,10 @@ namespace ParcelBox.Api.Tests;
 public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string BaseUrl = "api/lockers";
-    
     private readonly HttpClient _client;
     
-    private readonly Locker _testLocker = new()
+    private readonly CreateLockerDto _testLocker = new()
     {
-        Id = 1,
         Code = "WAS-002",
         Address = "1600 Pennsylvania Avenue NW",
         City = "Washington DC",
@@ -80,13 +78,7 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task CreateLocker_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", new Locker
-        {
-            Code = " ",
-            Address = " ",
-            City = " ",
-            PostalCode = " "
-        });
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", new CreateLockerDto());
         
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
