@@ -78,6 +78,20 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task CreateLocker_ReturnsBadRequest()
+    {
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", new Locker
+        {
+            Code = " ",
+            Address = " ",
+            City = " ",
+            PostalCode = " "
+        });
+        
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task CreateLockerBoxes_ReturnsCreatedResult()
     {
         var response = await _client.PatchAsJsonAsync($"{BaseUrl}/1/boxes", _lockerBoxes);
