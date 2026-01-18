@@ -3,7 +3,7 @@
 on:
   push:
     branches:
-      - main  
+      - main
 
 permissions:
   contents: write
@@ -19,19 +19,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '10.0.x' 
+          dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore ParcelBox.Api/ParcelBox.Api/ParcelBox.Api.csproj
 
       - name: Build project
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build ParcelBox.Api/ParcelBox.Api/ParcelBox.Api.csproj --configuration Release --no-restore --output ./build-output
 
       - name: Install Swagger CLI
         run: dotnet tool install --global Swashbuckle.AspNetCore.Cli
 
       - name: Generate Swagger JSON
-        run: swagger tofile --output swagger.json bin/Release/net10.0/ParcelBox.Api.dll v1
+        run: swagger tofile --output swagger.json ./build-output/ParcelBox.Api.dll v1
 
       - name: Prepare Documentation Folder
         run: |
@@ -44,4 +44,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          force_orphan: true 
+          force_orphan: true
