@@ -90,4 +90,21 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
 
         response.EnsureSuccessStatusCode();
     }
+
+    [Fact]
+    public async Task EditLockerBox_ReturnsOkResult()
+    {
+        EditLockerDto lockerDto = new() { Address = "800 Southern Ave SE" };
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", lockerDto);
+
+        response.EnsureSuccessStatusCode();
+    }
+    
+    [Fact]
+    public async Task EditLockerBox_ReturnsBadRequest()
+    {
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", new EditLockerDto());
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }
