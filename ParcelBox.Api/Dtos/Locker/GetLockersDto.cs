@@ -2,7 +2,7 @@
 
 namespace ParcelBox.Api.Dtos.Locker;
 
-public class GetLockerDto
+public class GetLockersDto
 {
     public int Id { get; set; }
     

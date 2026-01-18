@@ -15,13 +15,13 @@ public class LockersController(IRepository<Locker> repository)
     /// </summary>
     /// <returns>An array of lockers</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<GetLockerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<GetLockersDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult GetAllLockers()
     {
         var lockers = repository.GetAll();
         
-        return Ok(lockers.Select(locker => new GetLockerDto
+        return Ok(lockers.Select(locker => new GetLockersDto
         {
             Id = locker.Id,
             Code = locker.Code,
@@ -39,7 +39,7 @@ public class LockersController(IRepository<Locker> repository)
     /// <param name="id">The ID of a locker</param>
     /// <returns>A single locker record</returns>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(GetLockerDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetSingleLockerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult GetLockerById(int id)
@@ -48,7 +48,7 @@ public class LockersController(IRepository<Locker> repository)
 
         if (locker == null) return NotFound();
 
-        return Ok(new GetLockerDto
+        return Ok(new GetSingleLockerDto
         {
             Code = locker.Code,
             Address = locker.Address,
@@ -65,7 +65,7 @@ public class LockersController(IRepository<Locker> repository)
     /// <param name="lockerDto">The locker to be created</param>
     /// <returns>A link to the locker that was created</returns>
     [HttpPost("create")]
-    [ProducesResponseType(typeof(GetLockerDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetLockersDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateLocker([FromBody] CreateLockerDto lockerDto)
@@ -90,7 +90,7 @@ public class LockersController(IRepository<Locker> repository)
     /// <param name="lockerBoxDtos">An array of locker boxes to be created</param>
     /// <returns></returns>
     [HttpPatch("{id:int}/boxes")]
-    [ProducesResponseType(typeof(GetLockerDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(GetLockersDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateLockerBoxes(int id, [FromBody] CreateLockerBoxDto[] lockerBoxDtos)
