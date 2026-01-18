@@ -6,6 +6,7 @@ using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Controllers;
 
+/// <inheritdoc />
 public class LockersController(IRepository<Locker> repository) 
     : BaseController
 {
