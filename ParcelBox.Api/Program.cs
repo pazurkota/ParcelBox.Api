@@ -11,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ParcelBox.Api.xml"));
+});
+
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IRepository<Locker>, LockerRepository>();
 builder.Services.AddProblemDetails();
@@ -26,6 +32,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
