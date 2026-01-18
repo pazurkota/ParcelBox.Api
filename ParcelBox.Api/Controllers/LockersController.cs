@@ -81,37 +81,6 @@ public class LockersController(IRepository<Locker> repository)
         repository.Create(newLocker);
         return Created($"/locker/{newLocker.Id}", lockerDto);
     }
-
-    
-    /// <summary>
-    /// Creates a locker boxes in a locker
-    /// </summary>
-    /// <param name="id">The ID of a locker</param>
-    /// <param name="lockerBoxDtos">An array of locker boxes to be created</param>
-    /// <returns></returns>
-    [HttpPatch("{id:int}/boxes")]
-    [ProducesResponseType(typeof(GetLockersDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult CreateLockerBoxes(int id, [FromBody] CreateLockerBoxDto[] lockerBoxDtos)
-    {
-        var existingLocker = repository.GetById(id);
-        if (existingLocker == null) return NotFound();
-
-        foreach (var boxDto in lockerBoxDtos)
-        {
-            existingLocker.LockerBoxes.Add(new LockerBox()
-            {
-                Id = existingLocker.LockerBoxes.Count + 1,
-                IsOccupied = false,
-                LockerId = existingLocker.Id,
-                LockerSize = boxDto.LockerSize
-            });
-        }
-
-        return Created($"/locker/{existingLocker.Id}", lockerBoxDtos);
-    }
-
     
     /// <summary>
     /// Edits the locker
