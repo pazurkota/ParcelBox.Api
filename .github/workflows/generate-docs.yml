@@ -31,7 +31,7 @@ jobs:
         run: dotnet tool install --global Swashbuckle.AspNetCore.Cli
 
       - name: Generate Swagger JSON
-        run: swagger tofile --output swagger.json bin/Release/net8.0/ParcelBox.Api.dll v1
+        run: swagger tofile --output swagger.json bin/Release/net10.0/ParcelBox.Api.dll v1
 
       - name: Prepare Documentation Folder
         run: |
