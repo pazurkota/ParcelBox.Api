@@ -17,7 +17,6 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ParcelBox.Api.xml"));
 });
 
-builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IRepository<Locker>, LockerRepository>();
 builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -31,7 +30,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
