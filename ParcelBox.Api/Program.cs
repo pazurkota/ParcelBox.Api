@@ -12,8 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddProblemDetails();
 builder.Services.AddSingleton<IRepository<Locker>, LockerRepository>();
+builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddControllers(options =>
 {
