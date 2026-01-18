@@ -23,6 +23,7 @@ public class LockersController(IRepository<Locker> repository)
         
         return Ok(lockers.Select(locker => new GetLockerDto
         {
+            Id = locker.Id,
             Code = locker.Code,
             Address = locker.Address,
             City = locker.City,
