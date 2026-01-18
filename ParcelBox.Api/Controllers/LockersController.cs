@@ -75,4 +75,15 @@ public class LockersController(IRepository<Locker> repository)
 
         return Created($"/locker/{existingLocker.Id}", lockerBoxDtos);
     }
+
+    [HttpPut("{id:int}/edit")]
+    public IActionResult EditLocker(int id, [FromBody] EditLockerDto lockerDto)
+    {
+        var existingLocker = repository.GetById(id);
+        if (existingLocker == null) return NotFound();
+
+        existingLocker.Address = lockerDto.Address;
+
+        return Ok();
+    }
 }
