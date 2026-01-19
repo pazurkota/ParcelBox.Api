@@ -5,23 +5,30 @@ namespace ParcelBox.Api.Tests;
 
 public static class TestData
 {
-    public static CreateLockerDto CreateLockerDto(string code = "WAS-002") =>
-        new CreateLockerDto
+    public static CreateLockerDto CreateLockerDto() =>
+        new()
         {
-            Code = code,
+            Code = "WAS-002",
             Address = "1600 Pennsylvania Avenue NW",
             City = "Washington DC",
             PostalCode = "20500 USA"
         };
 
-    public static Locker LockerEntity(int id = 1, string code = "WAS-001") =>
-        new Locker
+    public static Locker LockerEntity() =>
+        new()
         {
-            Id = id,
-            Code = code,
+            Id = 1,
+            Code = "WAS-001",
             Address = "1400 Defense Pentagon",
             City = "Washington DC",
             PostalCode = "20301 USA",
             LockerBoxes = new List<LockerBox>()
         };
+
+    public static CreateLockerBoxDto[] CreateLockerBoxDtos() =>
+    [
+        new() {LockerSize = "Small"},
+        new() {LockerSize = "Medium"},
+        new() {LockerSize = "Big"}
+    ];
 }

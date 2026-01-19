@@ -12,7 +12,7 @@ public static class TestSeeder
         
         try
         {
-            repository.Create(TestData.LockerEntity(1, "WAS-001"));
+            repository.Create(TestData.LockerEntity());
         }
         catch(Exception e)
         {
