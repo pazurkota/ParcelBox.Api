@@ -12,14 +12,6 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string BaseUrl = "api/lockers";
     private readonly HttpClient _client;
-    
-    private readonly CreateLockerDto _testLocker = new()
-    {
-        Code = "WAS-002",
-        Address = "1600 Pennsylvania Avenue NW",
-        City = "Washington DC",
-        PostalCode = "20500 USA"
-    };
 
     public LockerApiTest(WebApplicationFactory<Program> factory)
     {
@@ -55,7 +47,7 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task CreateLocker_ReturnsCreatedResult()
     {
-        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", _testLocker);
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", TestData.CreateLockerDto());
 
         response.EnsureSuccessStatusCode();
     }
