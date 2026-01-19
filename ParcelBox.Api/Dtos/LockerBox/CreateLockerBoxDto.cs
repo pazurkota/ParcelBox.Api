@@ -2,5 +2,5 @@
 
 public class CreateLockerBoxDto
 {
-    public required string LockerSize { get; set; }
+    public string LockerSize { get; set; } = null!;
 }

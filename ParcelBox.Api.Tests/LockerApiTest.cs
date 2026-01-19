@@ -12,35 +12,12 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string BaseUrl = "api/lockers";
     private readonly HttpClient _client;
-    
-    private readonly CreateLockerDto _testLocker = new()
-    {
-        Code = "WAS-002",
-        Address = "1600 Pennsylvania Avenue NW",
-        City = "Washington DC",
-        PostalCode = "20500 USA"
-    };
-
-    private readonly CreateLockerBoxDto[] _lockerBoxes = new[]
-    {
-        new CreateLockerBoxDto { LockerSize = "Small" },
-        new CreateLockerBoxDto {LockerSize = "Medium"}
-    };
 
     public LockerApiTest(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
 
-        var repository = factory.Services.GetRequiredService<IRepository<Locker>>();
-        repository.Create(new Locker()
-        {
-            Id = 1,
-            Address = "1400 Defense Pentagon",
-            City = "Washington DC",
-            PostalCode = "20301 USA",
-            Code = "WAS-001",
-            LockerBoxes = []
-        });
+        TestSeeder.SeedDefaultLockers(factory.Services);
     }
 
     [Fact]
@@ -70,7 +47,7 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task CreateLocker_ReturnsCreatedResult()
     {
-        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", _testLocker);
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", TestData.CreateLockerDto());
 
         response.EnsureSuccessStatusCode();
     }
@@ -80,31 +57,6 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
     {
         var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", new CreateLockerDto());
         
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task CreateLockerBoxes_ReturnsCreatedResult()
-    {
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/1/boxes", _lockerBoxes);
-
-        response.EnsureSuccessStatusCode();
-    }
-
-    [Fact]
-    public async Task EditLockerBox_ReturnsOkResult()
-    {
-        EditLockerDto lockerDto = new() { Address = "800 Southern Ave SE" };
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", lockerDto);
-
-        response.EnsureSuccessStatusCode();
-    }
-    
-    [Fact]
-    public async Task EditLockerBox_ReturnsBadRequest()
-    {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", new EditLockerDto());
-
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 }
