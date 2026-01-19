@@ -22,7 +22,10 @@ public static class TestData
             Address = "1400 Defense Pentagon",
             City = "Washington DC",
             PostalCode = "20301 USA",
-            LockerBoxes = new List<LockerBox>()
+            LockerBoxes = new List<LockerBox>
+            {
+                new() {LockerSize = "Small"},
+            }
         };
 
     public static CreateLockerBoxDto[] CreateLockerBoxDtos() =>

@@ -32,4 +32,20 @@ public class BoxesApiTest : IClassFixture<WebApplicationFactory<Program>>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
+
+    [Fact]
+    public async Task EditLockerBoxStatus_ReturnsOkResult()
+    {
+        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/occupied/1/1/true", "");
+
+        response.EnsureSuccessStatusCode();
+    }
+    
+    [Fact]
+    public async Task EditLockerBoxStatus_ReturnsNotFound()
+    {
+        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/occupied/2/1/true", "");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 }
