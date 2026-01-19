@@ -9,11 +9,3 @@ public class LockerBox
     public bool IsOccupied { get; set; }
     public int LockerId { get; set; }
 }
-
-
-public enum LockerSize
-{
-    Small,
-    Medium,
-    Big
-}
