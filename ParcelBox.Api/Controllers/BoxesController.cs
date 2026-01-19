@@ -26,4 +26,16 @@ public class BoxesController(IRepository<Locker> repository) : BaseController
 
         return Ok();
     }
+
+    [HttpPatch("occupied/{lockerId:int}/{boxId:int}/{isOccupied:bool}")]
+    public IActionResult EditLockerBoxStatus(int lockerId, int boxId, bool isOccupied)
+    {
+        var existingLocker = repository.GetById(lockerId);
+        if (existingLocker == null) return NotFound();
+
+        var existingBox = existingLocker.LockerBoxes.FirstOrDefault(x => x.Id == boxId);
+        if (existingBox == null) return NotFound();
+
+        return Ok(existingBox.IsOccupied = isOccupied);
+    }
 }
