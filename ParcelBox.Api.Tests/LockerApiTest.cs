@@ -25,16 +25,7 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
     {
         _client = factory.CreateClient();
 
-        var repository = factory.Services.GetRequiredService<IRepository<Locker>>();
-        repository.Create(new Locker
-        {
-            Id = 1,
-            Address = "1400 Defense Pentagon",
-            City = "Washington DC",
-            PostalCode = "20301 USA",
-            Code = "WAS-001",
-            LockerBoxes = []
-        });
+        TestSeeder.SeedDefaultLockers(factory.Services);
     }
 
     [Fact]
