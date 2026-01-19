@@ -24,7 +24,7 @@ public static class TestData
             PostalCode = "20301 USA",
             LockerBoxes = new List<LockerBox>
             {
-                new() {LockerSize = "Small"},
+                new() {LockerSize = Size.Small},
             }
         };
 

@@ -20,7 +20,7 @@ public class LockerRepository : IRepository<Locker>
                 new LockerBox
                 {
                     Id = 1,
-                    LockerSize = nameof(LockerSize.Small),
+                    LockerSize = Size.Small,
                     IsOccupied = false,
                     LockerId = 1
                 },
@@ -28,7 +28,7 @@ public class LockerRepository : IRepository<Locker>
                 new LockerBox
                 {
                     Id = 2,
-                    LockerSize = nameof(LockerSize.Medium),
+                    LockerSize = Size.Medium,
                     IsOccupied = true,
                     LockerId = 1
                 },
@@ -36,7 +36,7 @@ public class LockerRepository : IRepository<Locker>
                 new LockerBox
                 {
                     Id = 3,
-                    LockerSize = nameof(LockerSize.Big),
+                    LockerSize = Size.Big,
                     IsOccupied = false,
                     LockerId = 1
                 }
