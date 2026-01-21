@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using ParcelBox.Api.Dtos.Locker;
+using ParcelBox.Api.Dtos.LockerBox;
 
 namespace ParcelBox.Api.Tests;
 

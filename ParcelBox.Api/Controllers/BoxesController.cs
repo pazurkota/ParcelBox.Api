@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Dtos.Locker;
+using ParcelBox.Api.Dtos.LockerBox;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Controllers;

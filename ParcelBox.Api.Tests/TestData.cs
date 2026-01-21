@@ -1,4 +1,5 @@
 ﻿using ParcelBox.Api.Dtos.Locker;
+using ParcelBox.Api.Dtos.LockerBox;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
