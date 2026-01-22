@@ -55,8 +55,32 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task CreateLocker_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", new CreateLockerDto());
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", TestData.InvalidCreateLockerDto());
         
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task EditLocker_ReturnsOkResult()
+    {
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", TestData.EditLockerDto());
+
+        response.EnsureSuccessStatusCode();
+    }
+    
+    [Fact]
+    public async Task EditLocker_ReturnsBadRequest()
+    {
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", TestData.InvalidEditLockerDto());
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+    
+    [Fact]
+    public async Task EditLocker_ReturnsNotFound()
+    {
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/0/edit", TestData.EditLockerDto());
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

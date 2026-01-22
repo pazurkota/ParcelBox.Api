@@ -14,6 +14,8 @@ public static class TestData
             City = "Washington DC",
             PostalCode = "20500 USA"
         };
+    
+    public static CreateLockerDto InvalidCreateLockerDto() => new();
 
     public static Locker LockerEntity() =>
         new()
@@ -29,9 +31,16 @@ public static class TestData
             }
         };
 
-    public static CreateLockerBoxesDtos CreateLockerBoxDtos()
-    {
-        return new CreateLockerBoxesDtos()
+    public static EditLockerDto EditLockerDto() =>
+        new()
+        {
+            Address = "800 Southern Ave SE"
+        };
+
+    public static EditLockerDto InvalidEditLockerDto() => new();
+
+    public static CreateLockerBoxesDtos CreateLockerBoxDtos() =>
+        new()
         {
             BoxDtos = new List<CreateLockerBoxDto>
             {
@@ -40,11 +49,9 @@ public static class TestData
                 new() {LockerSize = "Big"}
             }
         };
-    }
     
-    public static CreateLockerBoxesDtos CreateInvalidLockerBoxDtos()
-    {
-        return new CreateLockerBoxesDtos()
+    public static CreateLockerBoxesDtos CreateInvalidLockerBoxDtos() =>
+        new()
         {
             BoxDtos = new List<CreateLockerBoxDto>
             {
@@ -52,5 +59,4 @@ public static class TestData
                 new() {LockerSize = "Large"}
             }
         };
-    }
 }
