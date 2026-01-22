@@ -14,7 +14,6 @@ public class BoxesApiTest : IClassFixture<WebApplicationFactory<Program>>
     public BoxesApiTest(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
-        
         TestSeeder.SeedDefaultLockers(factory.Services);
     }
 
@@ -29,7 +28,7 @@ public class BoxesApiTest : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task AddLockerBoxes_ReturnsBadRequest()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/1", new CreateLockerBoxDto());
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/1", new CreateLockerBoxesDtos());
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }

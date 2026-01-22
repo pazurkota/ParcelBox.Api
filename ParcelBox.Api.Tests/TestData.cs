@@ -29,10 +29,16 @@ public static class TestData
             }
         };
 
-    public static CreateLockerBoxDto[] CreateLockerBoxDtos() =>
-    [
-        new() {LockerSize = "Small"},
-        new() {LockerSize = "Medium"},
-        new() {LockerSize = "Big"}
-    ];
+    public static CreateLockerBoxesDtos CreateLockerBoxDtos()
+    {
+        return new CreateLockerBoxesDtos()
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Small"},
+                new() {LockerSize = "Medium"},
+                new() {LockerSize = "Big"}
+            }
+        };
+    }
 }
