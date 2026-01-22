@@ -41,4 +41,16 @@ public static class TestData
             }
         };
     }
+    
+    public static CreateLockerBoxesDtos CreateInvalidLockerBoxDtos()
+    {
+        return new CreateLockerBoxesDtos()
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Smol"},
+                new() {LockerSize = "Large"}
+            }
+        };
+    }
 }

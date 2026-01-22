@@ -12,17 +12,15 @@ public class BoxesController(IRepository<Locker> repository) : BaseController
     [HttpPut("add/{lockerId:int}")]
     public IActionResult AddLockerBoxes(int lockerId, [FromBody] CreateLockerBoxesDtos createLockerBoxesDtos)
     {
-        if (!ModelState.IsValid) 
-        {
-            return BadRequest(ModelState);
-        }
-        
         var existingLocker = repository.GetById(lockerId);
         if (existingLocker == null) return NotFound();
 
         foreach (var boxDto in createLockerBoxesDtos.BoxDtos)
         {
-            var size = Enum.Parse<Size>(boxDto.LockerSize, ignoreCase: true);
+            if (!Enum.TryParse<Size>(boxDto.LockerSize, ignoreCase: true, out var size))
+            {
+                return BadRequest($"Invalid locker size value: '{boxDto.LockerSize}'.");
+            }
             
             existingLocker.LockerBoxes.Add(new LockerBox
             {

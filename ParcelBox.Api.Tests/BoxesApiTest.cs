@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
-using ParcelBox.Api.Dtos.Locker;
-using ParcelBox.Api.Dtos.LockerBox;
 
 namespace ParcelBox.Api.Tests;
 
@@ -28,7 +26,7 @@ public class BoxesApiTest : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task AddLockerBoxes_ReturnsBadRequest()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/1", new CreateLockerBoxesDtos());
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/1", TestData.CreateInvalidLockerBoxDtos());
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
