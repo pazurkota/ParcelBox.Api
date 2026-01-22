@@ -9,6 +9,9 @@ public class CreateLockerBoxValidator : AbstractValidator<CreateLockerBoxDto>
 {
     public CreateLockerBoxValidator()
     {
-        RuleFor(x => x.LockerSize).NotEmpty();
+        RuleFor(x => x.LockerSize)
+            .NotEmpty()
+            .IsEnumName(typeof(Size), caseSensitive: false)
+            .WithMessage("Size given was invalid. Valid sizes: (Small, Medium, Big)");
     }
 }

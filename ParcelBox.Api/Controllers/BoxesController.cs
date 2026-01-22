@@ -10,18 +10,19 @@ namespace ParcelBox.Api.Controllers;
 public class BoxesController(IRepository<Locker> repository) : BaseController
 {
     [HttpPut("add/{lockerId:int}")]
-    public IActionResult AddLockerBoxes(int lockerId, [FromBody] CreateLockerBoxDto[] lockerBoxDtos)
+    public IActionResult AddLockerBoxes(int lockerId, [FromBody] CreateLockerBoxesDtos createLockerBoxesDtos)
     {
+        if (!ModelState.IsValid) 
+        {
+            return BadRequest(ModelState);
+        }
+        
         var existingLocker = repository.GetById(lockerId);
         if (existingLocker == null) return NotFound();
 
-        foreach (var boxDto in lockerBoxDtos)
+        foreach (var boxDto in createLockerBoxesDtos.BoxDtos)
         {
-            if (!Enum.TryParse<Size>(boxDto.LockerSize, ignoreCase: true, out var size))
-            {
-                // this is a temp solution (for now)
-                return BadRequest($"Invalid locker box size: '{boxDto.LockerSize}'");
-            }
+            var size = Enum.Parse<Size>(boxDto.LockerSize, ignoreCase: true);
             
             existingLocker.LockerBoxes.Add(new LockerBox
             {
