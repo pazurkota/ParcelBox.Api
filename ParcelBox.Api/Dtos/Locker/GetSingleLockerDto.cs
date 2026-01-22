@@ -9,5 +9,5 @@ public class GetSingleLockerDto
     public required string City { get; set; }
     public required string PostalCode { get; set; }
 
-    public List<LockerBox> LockerBoxes { get; set; } = [];
+    public List<Model.LockerBox> LockerBoxes { get; set; } = [];
 }

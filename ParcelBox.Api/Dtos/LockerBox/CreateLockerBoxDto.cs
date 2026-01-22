@@ -1,4 +1,6 @@
-﻿namespace ParcelBox.Api.Dtos.Locker;
+﻿using ParcelBox.Api.Model;
+
+namespace ParcelBox.Api.Dtos.LockerBox;
 
 public class CreateLockerBoxDto
 {

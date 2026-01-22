@@ -4,16 +4,8 @@ public class LockerBox
 {
     public int Id { get; set; }
  
-    public required string LockerSize { get; set; }
+    public Size LockerSize { get; set; }
     
     public bool IsOccupied { get; set; }
     public int LockerId { get; set; }
-}
-
-
-public enum LockerSize
-{
-    Small,
-    Medium,
-    Big
 }

@@ -1,4 +1,5 @@
 ﻿using ParcelBox.Api.Dtos.Locker;
+using ParcelBox.Api.Dtos.LockerBox;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
@@ -24,14 +25,32 @@ public static class TestData
             PostalCode = "20301 USA",
             LockerBoxes = new List<LockerBox>
             {
-                new() {LockerSize = "Small"},
+                new() {LockerSize = Size.Small},
             }
         };
 
-    public static CreateLockerBoxDto[] CreateLockerBoxDtos() =>
-    [
-        new() {LockerSize = "Small"},
-        new() {LockerSize = "Medium"},
-        new() {LockerSize = "Big"}
-    ];
+    public static CreateLockerBoxesDtos CreateLockerBoxDtos()
+    {
+        return new CreateLockerBoxesDtos()
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Small"},
+                new() {LockerSize = "Medium"},
+                new() {LockerSize = "Big"}
+            }
+        };
+    }
+    
+    public static CreateLockerBoxesDtos CreateInvalidLockerBoxDtos()
+    {
+        return new CreateLockerBoxesDtos()
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Smol"},
+                new() {LockerSize = "Large"}
+            }
+        };
+    }
 }
