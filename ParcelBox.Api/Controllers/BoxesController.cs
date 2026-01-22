@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Dtos.LockerBox;
@@ -16,12 +17,18 @@ public class BoxesController(IRepository<Locker> repository) : BaseController
 
         foreach (var boxDto in lockerBoxDtos)
         {
+            if (!Enum.TryParse<Size>(boxDto.LockerSize, ignoreCase: true, out var size))
+            {
+                // this is a temp solution (for now)
+                return BadRequest($"Invalid locker box size: '{boxDto.LockerSize}'");
+            }
+            
             existingLocker.LockerBoxes.Add(new LockerBox
             {
                 Id = existingLocker.LockerBoxes.Count + 1,
                 IsOccupied = false,
                 LockerId = existingLocker.Id,
-                LockerSize = boxDto.LockerSize
+                LockerSize = size
             });
         }
 

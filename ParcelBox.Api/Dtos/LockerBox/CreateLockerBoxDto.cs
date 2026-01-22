@@ -4,5 +4,5 @@ namespace ParcelBox.Api.Dtos.LockerBox;
 
 public class CreateLockerBoxDto
 {
-    public Size LockerSize { get; set; }
+    public string LockerSize { get; set; } = null!;
 }

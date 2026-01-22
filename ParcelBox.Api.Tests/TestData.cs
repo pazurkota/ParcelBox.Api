@@ -31,8 +31,8 @@ public static class TestData
 
     public static CreateLockerBoxDto[] CreateLockerBoxDtos() =>
     [
-        new() {LockerSize = Size.Small},
-        new() {LockerSize = Size.Medium},
-        new() {LockerSize = Size.Big}
+        new() {LockerSize = "Small"},
+        new() {LockerSize = "Medium"},
+        new() {LockerSize = "Big"}
     ];
 }
