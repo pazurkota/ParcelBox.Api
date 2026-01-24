@@ -47,7 +47,7 @@ namespace ParcelBox.Api.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lockers");
+                    b.ToTable("Lockers", (string)null);
                 });
 
             modelBuilder.Entity("ParcelBox.Api.Model.LockerBox", b =>
@@ -71,7 +71,7 @@ namespace ParcelBox.Api.Database.Migrations
 
                     b.HasIndex("LockerId");
 
-                    b.ToTable("LockerBox");
+                    b.ToTable("LockerBox", (string)null);
                 });
 
             modelBuilder.Entity("ParcelBox.Api.Model.LockerBox", b =>
