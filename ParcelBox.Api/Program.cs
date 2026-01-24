@@ -2,9 +2,11 @@ using System;
 using System.IO;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ParcelBox.Api.Abstraction;
+using ParcelBox.Api.Database;
 using ParcelBox.Api.Model;
 using ParcelBox.Api.Repositories;
 using ParcelBox.Api.Validation;
@@ -17,6 +19,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ParcelBox.Api.xml"));
+});
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseNpgsql(connectionString);
 });
 builder.Services.AddSingleton<IRepository<Locker>, LockerRepository>();
 builder.Services.AddProblemDetails();
