@@ -11,7 +11,7 @@ using ParcelBox.Api.Database;
 namespace ParcelBox.Api.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260124142723_Init")]
+    [Migration("20260124180445_Init")]
     partial class Init
     {
         /// <inheritdoc />

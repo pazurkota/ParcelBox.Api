@@ -3,11 +3,7 @@ using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Database;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Locker> Lockers { get; set; }
-
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
 }
