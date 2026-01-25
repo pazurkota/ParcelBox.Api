@@ -42,7 +42,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Verify EF Core migrations
-      run: dotnet ef migrations list --project ParcelBox.Api
+      run: dotnet ef database update --project ParcelBox.Api
       env:
         ConnectionStrings__DefaultConnection: "Host=localhost;Database=parcelbox_db;Username=postgres;Password=${{ secrets.POSTGRES_PASSWORD }}"
     - name: Test
