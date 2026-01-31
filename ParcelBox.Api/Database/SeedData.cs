@@ -15,7 +15,6 @@ public static class SeedData
             context.Lockers.AddRange(
                 new Locker
                 {
-                    Id = 1,
                     Address = "1400 Defense Pentagon",
                     City = "Washington DC",
                     PostalCode = "20301 USA",
@@ -24,26 +23,20 @@ public static class SeedData
                     [
                         new LockerBox
                         {
-                            Id = 1,
                             LockerSize = Size.Small,
-                            IsOccupied = false,
-                            LockerId = 1
+                            IsOccupied = false
                         },
 
                         new LockerBox
                         {
-                            Id = 2,
                             LockerSize = Size.Medium,
-                            IsOccupied = true,
-                            LockerId = 1
+                            IsOccupied = true
                         },
 
                         new LockerBox
                         {
-                            Id = 3,
                             LockerSize = Size.Big,
-                            IsOccupied = false,
-                            LockerId = 1
+                            IsOccupied = false
                         }
                     ]
                 });
