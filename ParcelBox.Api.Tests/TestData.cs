@@ -20,7 +20,6 @@ public static class TestData
     public static Locker LockerEntity() =>
         new()
         {
-            Id = 1,
             Code = "WAS-001",
             Address = "1400 Defense Pentagon",
             City = "Washington DC",
