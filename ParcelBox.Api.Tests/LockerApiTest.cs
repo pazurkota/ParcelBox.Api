@@ -52,23 +52,35 @@ public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixtu
         
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-    /*
+
     [Fact]
     public async Task CreateLocker_ReturnsCreatedResult()
     {
-        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", TestData.CreateLockerDto());
+        // Arrange
+        CreateLockerDto newLocker = new()
+        {
+            Code = "WAS-002",
+            Address = "1600 Pennsylvania Avenue NW",
+            City = "Washington DC",
+            PostalCode = "20500 USA"
+        };
+        
+        // Act
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", newLocker);
 
+        // Assert
         response.EnsureSuccessStatusCode();
     }
 
     [Fact]
     public async Task CreateLocker_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", TestData.InvalidCreateLockerDto());
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", new CreateLockerDto());
         
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
-
+    
+    /*
     [Fact]
     public async Task EditLocker_ReturnsOkResult()
     {
@@ -76,7 +88,7 @@ public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixtu
 
         response.EnsureSuccessStatusCode();
     }
-    
+
     [Fact]
     public async Task EditLocker_ReturnsBadRequest()
     {
@@ -84,7 +96,7 @@ public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixtu
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task EditLocker_ReturnsNotFound()
     {

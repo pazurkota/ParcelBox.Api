@@ -70,7 +70,7 @@ public class LockersController(AppDbContext dbContext)
         var existingLocker = LockersToGetLockersRequestDto(locker);
         return Ok(existingLocker);
     }
-/*
+
 
     /// <summary>
     /// Creates a new locker
@@ -78,10 +78,10 @@ public class LockersController(AppDbContext dbContext)
     /// <param name="lockerDto">The locker to be created</param>
     /// <returns>A link to the locker that was created</returns>
     [HttpPost("create")]
-    [ProducesResponseType(typeof(GetLockersDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetLockersDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult CreateLocker([FromBody] CreateLockerDto lockerDto)
+    public async Task<IActionResult> CreateLocker([FromBody] CreateLockerDto lockerDto)
     {
         Locker newLocker = new()
         {
@@ -91,10 +91,12 @@ public class LockersController(AppDbContext dbContext)
             PostalCode = lockerDto.PostalCode
         };
 
-        repository.Create(newLocker);
+        dbContext.Lockers.Add(newLocker);
+        await dbContext.SaveChangesAsync();
+        
         return Created($"/locker/{newLocker.Id}", lockerDto);
     }
-
+/*
     /// <summary>
     /// Edits the locker
     /// </summary>
