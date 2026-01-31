@@ -8,4 +8,6 @@ public class LockerBox
     
     public bool IsOccupied { get; set; }
     public int LockerId { get; set; }
+
+    public Locker Locker { get; set; } = null!;
 }
