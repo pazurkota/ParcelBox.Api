@@ -80,19 +80,27 @@ public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixtu
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
     
-    /*
+    
     [Fact]
     public async Task EditLocker_ReturnsOkResult()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", TestData.EditLockerDto());
+        // Arrange
+        EditLockerDto editLocker = new()
+        {
+            Address = "800 Southern Ave SE"
+        };
+        
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", editLocker);
 
+        // Assert
         response.EnsureSuccessStatusCode();
     }
 
     [Fact]
     public async Task EditLocker_ReturnsBadRequest()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", TestData.InvalidEditLockerDto());
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", new CreateLockerDto());
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -100,9 +108,16 @@ public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixtu
     [Fact]
     public async Task EditLocker_ReturnsNotFound()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/0/edit", TestData.EditLockerDto());
+        // Arrange
+        EditLockerDto editLocker = new()
+        {
+            Address = "800 Southern Ave SE"
+        };
+        
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/0/edit", editLocker);
 
+        // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-*/
 }

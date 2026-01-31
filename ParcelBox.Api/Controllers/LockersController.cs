@@ -96,7 +96,7 @@ public class LockersController(AppDbContext dbContext)
         
         return Created($"/locker/{newLocker.Id}", lockerDto);
     }
-/*
+
     /// <summary>
     /// Edits the locker
     /// </summary>
@@ -104,16 +104,19 @@ public class LockersController(AppDbContext dbContext)
     /// <param name="lockerDto">The data to be edited</param>
     /// <returns></returns>
     [HttpPut("{id:int}/edit")]
-    public IActionResult EditLocker(int id, [FromBody] EditLockerDto lockerDto)
+    public async Task<IActionResult> EditLocker(int id, [FromBody] EditLockerDto lockerDto)
     {
-        var existingLocker = repository.GetById(id);
+        var existingLocker = await dbContext.Lockers.FindAsync(id);
         if (existingLocker == null) return NotFound();
 
         existingLocker.Address = lockerDto.Address;
 
+        dbContext.Entry(existingLocker).State = EntityState.Modified;
+        await dbContext.SaveChangesAsync();
+        
         return Ok();
     }
-*/
+
     private static GetLockersDto LockersToGetLockersRequestDto(Locker locker)
     {
         return new GetLockersDto
