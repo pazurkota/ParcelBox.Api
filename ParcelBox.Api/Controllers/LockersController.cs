@@ -2,14 +2,16 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ParcelBox.Api.Abstraction;
+using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Controllers;
 
 /// <inheritdoc />
-public class LockersController(IRepository<Locker> repository) 
+public class LockersController(AppDbContext dbContext) 
     : BaseController
 {
     /// <summary>
@@ -19,22 +21,35 @@ public class LockersController(IRepository<Locker> repository)
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<GetLockersDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult GetAllLockers()
+    public async Task<IActionResult> GetAllLockers([FromQuery] GetAllLockersRequestDto requestDto)
     {
-        var lockers = repository.GetAll();
-        
-        return Ok(lockers.Select(locker => new GetLockersDto
+        int page = requestDto?.Page ?? 1;
+        int numberOfRecords = requestDto?.RecordsPerPage ?? 100;
+
+        var query = dbContext.Lockers
+            .Include(x => x.LockerBoxes)
+            .Skip((page - 1) * numberOfRecords)
+            .Take(numberOfRecords);
+
+        if (requestDto is not null)
         {
-            Id = locker.Id,
-            Code = locker.Code,
-            Address = locker.Address,
-            City = locker.City,
-            LockerBoxes = locker.LockerBoxes,
-            PostalCode = locker.PostalCode
-        }));
+            if (!string.IsNullOrWhiteSpace(requestDto.LockerCode))
+            {
+                query = query.Where(x => x.PostalCode.Contains(requestDto.LockerCode));
+            }
+
+            if (!string.IsNullOrWhiteSpace(requestDto.LockersAreInCity))
+            {
+                query = query.Where(x => x.City.Contains(requestDto.LockersAreInCity));
+            }
+        }
+        
+        var lockers = await query.ToArrayAsync();
+        
+        return Ok(lockers.Select(LockersToGetLockersRequestDto));
     }
 
-    
+ 
     /// <summary>
     /// Gets a locker by ID
     /// </summary>
@@ -44,23 +59,19 @@ public class LockersController(IRepository<Locker> repository)
     [ProducesResponseType(typeof(GetSingleLockerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult GetLockerById(int id)
+    public async Task<IActionResult> GetLockerById(int id)
     {
-        var locker = repository.GetById(id);
+        var locker = await dbContext.Lockers
+            .Include(x => x.LockerBoxes)
+            .SingleOrDefaultAsync(x => x.Id == id);
 
         if (locker == null) return NotFound();
 
-        return Ok(new GetSingleLockerDto
-        {
-            Code = locker.Code,
-            Address = locker.Address,
-            City = locker.Code,
-            LockerBoxes = locker.LockerBoxes,
-            PostalCode = locker.PostalCode
-        });
+        var existingLocker = LockersToGetLockersRequestDto(locker);
+        return Ok(existingLocker);
     }
-    
-    
+/*
+
     /// <summary>
     /// Creates a new locker
     /// </summary>
@@ -79,11 +90,11 @@ public class LockersController(IRepository<Locker> repository)
             City = lockerDto.City,
             PostalCode = lockerDto.PostalCode
         };
-        
+
         repository.Create(newLocker);
         return Created($"/locker/{newLocker.Id}", lockerDto);
     }
-    
+
     /// <summary>
     /// Edits the locker
     /// </summary>
@@ -99,5 +110,17 @@ public class LockersController(IRepository<Locker> repository)
         existingLocker.Address = lockerDto.Address;
 
         return Ok();
+    }
+*/
+    private static GetLockersDto LockersToGetLockersRequestDto(Locker locker)
+    {
+        return new GetLockersDto
+        {
+            Id = locker.Id,
+            Code = locker.Code,
+            Address = locker.Address,
+            City = locker.City,
+            PostalCode = locker.PostalCode
+        };
     }
 }

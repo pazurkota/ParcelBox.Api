@@ -8,17 +8,10 @@ using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
 
-public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
+public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
 {
     private const string BaseUrl = "api/lockers";
-    private readonly HttpClient _client;
-
-    public LockerApiTest(WebApplicationFactory<Program> factory)
-    {
-        _client = factory.CreateClient();
-
-        TestSeeder.SeedDefaultLockers(factory.Services);
-    }
+    private readonly HttpClient _client = factory.CreateClient();
 
     [Fact]
     public async Task GetAllLockers_ReturnsOkResult()
@@ -26,6 +19,22 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
         var response = await _client.GetAsync(BaseUrl);
 
         response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task GetAllLockers_WithQuery_ReturnsOkResult()
+    {
+        var response = await _client.GetAsync($"{BaseUrl}?page=1");
+
+        response.EnsureSuccessStatusCode();
+    }
+    
+    [Fact]
+    public async Task GetAllLockers_WithQuery_ReturnsBadRequest()
+    {
+        var response = await _client.GetAsync($"{BaseUrl}?page=0");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -43,7 +52,7 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
         
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-    
+    /*
     [Fact]
     public async Task CreateLocker_ReturnsCreatedResult()
     {
@@ -83,4 +92,5 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+*/
 }

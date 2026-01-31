@@ -1,4 +1,5 @@
-﻿using ParcelBox.Api.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Database;
 
@@ -7,6 +8,7 @@ public static class SeedData
     public static void Seed(IServiceProvider provider)
     {
         var context = provider.GetRequiredService<AppDbContext>();
+        context.Database.Migrate();
 
         if (!context.Lockers.Any())
         {
