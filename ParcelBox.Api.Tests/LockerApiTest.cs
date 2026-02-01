@@ -85,13 +85,27 @@ public class LockerApiTest(CustomWebApplicationFactory factory) : IClassFixture<
     public async Task EditLocker_ReturnsOkResult()
     {
         // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "EDT-001",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
+    
+        var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
         EditLockerDto editLocker = new()
         {
             Address = "800 Southern Ave SE"
         };
-        
+    
         // Act
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", editLocker);
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{idToEdit}/edit", editLocker);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -124,7 +138,22 @@ public class LockerApiTest(CustomWebApplicationFactory factory) : IClassFixture<
     [Fact]
     public async Task DeleteLocker_ReturnsNoContent()
     {
-        var response = await _client.DeleteAsync($"{BaseUrl}/1");
+        // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "DEL-001",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
+    
+        var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
+        var response = await _client.DeleteAsync($"{BaseUrl}/{idToEdit}");
         
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }

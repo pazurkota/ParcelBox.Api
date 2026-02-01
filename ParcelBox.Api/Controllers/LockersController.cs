@@ -94,7 +94,16 @@ public class LockersController(AppDbContext dbContext)
         dbContext.Lockers.Add(newLocker);
         await dbContext.SaveChangesAsync();
         
-        return Created($"/locker/{newLocker.Id}", lockerDto);
+        var resultDto = new GetLockersDto 
+        {
+            Id = newLocker.Id, 
+            Code = newLocker.Code,
+            Address = newLocker.Address,
+            City = newLocker.City,
+            PostalCode = newLocker.PostalCode
+        };
+        
+        return Created($"/locker/{newLocker.Id}", resultDto);
     }
 
     /// <summary>
