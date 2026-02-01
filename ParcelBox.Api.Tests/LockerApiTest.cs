@@ -8,7 +8,7 @@ using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
 
-public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public class LockerApiTest(CustomWebApplicationFactory factory) : IClassFixture<CustomWebApplicationFactory>
 {
     private const string BaseUrl = "api/lockers";
     private readonly HttpClient _client = factory.CreateClient();
@@ -118,6 +118,22 @@ public class LockerApiTest(WebApplicationFactory<Program> factory) : IClassFixtu
         var response = await _client.PutAsJsonAsync($"{BaseUrl}/0/edit", editLocker);
 
         // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteLocker_ReturnsNoContent()
+    {
+        var response = await _client.DeleteAsync($"{BaseUrl}/1");
+        
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteLocker_ReturnsNotFound()
+    {
+        var response = await _client.DeleteAsync($"{BaseUrl}/0");
+        
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

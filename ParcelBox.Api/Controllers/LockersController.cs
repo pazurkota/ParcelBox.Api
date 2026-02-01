@@ -117,6 +117,27 @@ public class LockersController(AppDbContext dbContext)
         return Ok();
     }
 
+    /// <summary>
+    /// Deletes the locker
+    /// </summary>
+    /// <param name="id">The ID of a locker</param>
+    /// <returns></returns>
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteLocker(int id)
+    {
+        var locker = await dbContext.Lockers.FindAsync(id);
+
+        if (locker is null) return NotFound();
+
+        dbContext.Lockers.Remove(locker);
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     private static GetLockersDto LockersToGetLockersRequestDto(Locker locker)
     {
         return new GetLockersDto
