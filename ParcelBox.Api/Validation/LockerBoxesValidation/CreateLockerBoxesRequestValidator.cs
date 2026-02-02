@@ -8,7 +8,8 @@ public class CreateLockerBoxesRequestValidator : AbstractValidator<CreateLockerB
     public CreateLockerBoxesRequestValidator()
     {
         RuleFor(x => x.BoxDtos)
-            .NotEmpty();
+            .NotEmpty()
+            .OverridePropertyName("lockerBoxes");
         
         RuleForEach(x => x.BoxDtos)
             .SetValidator(new CreateLockerBoxValidator());

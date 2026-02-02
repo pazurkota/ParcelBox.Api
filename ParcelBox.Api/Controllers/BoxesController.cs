@@ -1,20 +1,24 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using ParcelBox.Api.Abstraction;
+using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Dtos.LockerBox;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Controllers;
 
-public class BoxesController(IRepository<Locker> repository) : BaseController
+public class BoxesController(AppDbContext dbContext) : BaseController
 {
     [HttpPut("add/{lockerId:int}")]
-    public IActionResult AddLockerBoxes(int lockerId, [FromBody] CreateLockerBoxesDtos createLockerBoxesDtos)
+    public async Task<IActionResult> AddLockerBoxes(int lockerId, [FromBody] CreateLockerBoxesDtos createLockerBoxesDtos)
     {
-        var existingLocker = repository.GetById(lockerId);
-        if (existingLocker == null) return NotFound();
+        // return 404 if locker not found
+        var isLockerExisting = dbContext.Lockers.Any(x => x.Id == lockerId);
+        if (!isLockerExisting) return NotFound();
 
+        List<LockerBox> lockerBoxes = new();
+        
         foreach (var boxDto in createLockerBoxesDtos.BoxDtos)
         {
             if (!Enum.TryParse<Size>(boxDto.LockerSize, ignoreCase: true, out var size))
@@ -22,18 +26,20 @@ public class BoxesController(IRepository<Locker> repository) : BaseController
                 return BadRequest($"Invalid locker size value: '{boxDto.LockerSize}'.");
             }
             
-            existingLocker.LockerBoxes.Add(new LockerBox
+            lockerBoxes.Add(new LockerBox
             {
-                Id = existingLocker.LockerBoxes.Count + 1,
                 IsOccupied = false,
-                LockerId = existingLocker.Id,
+                LockerId = lockerId,
                 LockerSize = size
             });
         }
+        
+        dbContext.LockerBoxes.AddRange(lockerBoxes);
+        await dbContext.SaveChangesAsync();
 
         return Ok();
     }
-
+/*
     [HttpPatch("occupied/{lockerId:int}/{boxId:int}/{isOccupied:bool}")]
     public IActionResult EditLockerBoxStatus(int lockerId, int boxId, bool isOccupied)
     {
@@ -45,4 +51,5 @@ public class BoxesController(IRepository<Locker> repository) : BaseController
 
         return Ok(existingBox.IsOccupied = isOccupied);
     }
+*/
 }
