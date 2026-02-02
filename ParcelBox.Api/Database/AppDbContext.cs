@@ -6,6 +6,7 @@ namespace ParcelBox.Api.Database;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Locker> Lockers { get; set; }
+    public DbSet<LockerBox> LockerBoxes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
