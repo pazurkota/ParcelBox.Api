@@ -1,44 +1,98 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using ParcelBox.Api.Dtos.Locker;
+using ParcelBox.Api.Dtos.LockerBox;
+using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
 
-public class BoxesApiTest : IClassFixture<WebApplicationFactory<Program>>
+public class BoxesApiTest(CustomWebApplicationFactory factory) : IClassFixture<CustomWebApplicationFactory>
 {
     private const string BaseUrl = "api/boxes";
-    private readonly HttpClient _client;
+    private readonly HttpClient _client = factory.CreateClient();
 
-    public BoxesApiTest(WebApplicationFactory<Program> factory)
-    {
-        _client = factory.CreateClient();
-        TestSeeder.SeedDefaultLockers(factory.Services);
-    }
-/*
     [Fact]
     public async Task AddLockerBoxes_ReturnsOkResult()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/1", TestData.CreateLockerBoxDtos());
+        // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "TST-001",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
 
+        var createLockers = new CreateLockerBoxesDtos
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Small"},
+                new() {LockerSize = "Medium"},
+                new() {LockerSize = "Big"}
+            }
+        };
+    
+        var createResponse = await _client.PostAsJsonAsync("api/lockers/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/{idToEdit}", createLockers);
+
+        // Assert
         response.EnsureSuccessStatusCode();
     }
     
     [Fact]
     public async Task AddLockerBoxes_ReturnsBadRequest()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/1", TestData.CreateInvalidLockerBoxDtos());
-
+        // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "TST-001",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
+    
+        var createResponse = await _client.PostAsJsonAsync("api/lockers/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/{idToEdit}", new CreateLockerBoxesDtos());
+        
+        // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
     
     [Fact]
     public async Task AddLockerBoxes_ReturnsNotFound()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/0", TestData.CreateLockerBoxDtos());
+        // Arrange
+        var createLockers = new CreateLockerBoxesDtos
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Small"},
+                new() {LockerSize = "Medium"},
+                new() {LockerSize = "Big"}
+            }
+        };
+        
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/add/0", createLockers);
 
+        // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-
+/*
     [Fact]
     public async Task EditLockerBoxStatus_ReturnsOkResult()
     {
@@ -46,7 +100,7 @@ public class BoxesApiTest : IClassFixture<WebApplicationFactory<Program>>
 
         response.EnsureSuccessStatusCode();
     }
-    
+
     [Fact]
     public async Task EditLockerBoxStatus_ReturnsNotFound()
     {
