@@ -9,7 +9,7 @@ public static class SeedData
     {
         var context = provider.GetRequiredService<AppDbContext>();
         
-        context.Database.EnsureDeleted();
+        context.Database.EnsureDeleted(); // temp only
         context.Database.Migrate();
         
         var locker = context.Lockers.FirstOrDefault(x => x.Code == "WAS-001");
