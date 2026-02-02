@@ -13,5 +13,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Locker>()
             .Property(x => x.Id)
             .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<LockerBox>()
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
     }
 }
