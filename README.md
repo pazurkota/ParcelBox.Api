@@ -28,7 +28,7 @@
 
 - [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
 - [PostreSQL 18](https://www.postgresql.org/download/) or later
-- [Docker](https://www.docker.com/get-started) (optional, for containerized deployment)
+- [Docker](https://www.docker.com/get-started) (optional, for containerized deployment, but required for testing)
 
 ### Clone the Repository
 
@@ -97,10 +97,15 @@ cd ParcelBox.Api
    Open your browser and navigate to `https://localhost:7142/swagger` to view the interactive API documentation.
 
 ### Running Tests
-
+  
+  To run tests, just simply run:
+  
 ```bash
 dotnet test
 ```
+
+  > [!WARNING]
+  > To run tests, ensure that Docker is installed and running on your device.
 
 ## Contributing
 
