@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Locker;
+using ParcelBox.Api.Dtos.LockerBox;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Controllers;
@@ -155,7 +156,15 @@ public class LockersController(AppDbContext dbContext)
             Code = locker.Code,
             Address = locker.Address,
             City = locker.City,
-            PostalCode = locker.PostalCode
+            PostalCode = locker.PostalCode,
+            LockerBoxes = locker.LockerBoxes
+                .Select(x => new GetLockerBoxDto()
+                {
+                    Id = x.Id,
+                    LockerSize = x.LockerSize,
+                    IsOccupied = x.IsOccupied,
+                    LockerId = x.LockerId
+                }).ToList()
         };
     }
 }
