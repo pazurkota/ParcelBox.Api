@@ -1,13 +1,11 @@
-﻿namespace ParcelBox.Api.Model;
+﻿using ParcelBox.Api.Model;
 
-public class LockerBox
+namespace ParcelBox.Api.Dtos.LockerBox;
+
+public class GetLockerBoxDto
 {
     public int Id { get; set; }
- 
     public Size LockerSize { get; set; }
-    
     public bool IsOccupied { get; set; }
     public int LockerId { get; set; }
-
-    public Locker Locker { get; set; } = null!;
 }

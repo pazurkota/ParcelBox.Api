@@ -8,40 +8,10 @@ using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
 
-public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
+public class LockerApiTest(CustomWebApplicationFactory factory) : IClassFixture<CustomWebApplicationFactory>
 {
     private const string BaseUrl = "api/lockers";
-    private readonly HttpClient _client;
-    
-    private readonly CreateLockerDto _testLocker = new()
-    {
-        Code = "WAS-002",
-        Address = "1600 Pennsylvania Avenue NW",
-        City = "Washington DC",
-        PostalCode = "20500 USA"
-    };
-
-    private readonly CreateLockerBoxDto[] _lockerBoxes = new[]
-    {
-        new CreateLockerBoxDto { LockerSize = "Small" },
-        new CreateLockerBoxDto {LockerSize = "Medium"}
-    };
-
-    public LockerApiTest(WebApplicationFactory<Program> factory)
-    {
-        _client = factory.CreateClient();
-
-        var repository = factory.Services.GetRequiredService<IRepository<Locker>>();
-        repository.Create(new Locker()
-        {
-            Id = 1,
-            Address = "1400 Defense Pentagon",
-            City = "Washington DC",
-            PostalCode = "20301 USA",
-            Code = "WAS-001",
-            LockerBoxes = []
-        });
-    }
+    private readonly HttpClient _client = factory.CreateClient();
 
     [Fact]
     public async Task GetAllLockers_ReturnsOkResult()
@@ -49,6 +19,22 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
         var response = await _client.GetAsync(BaseUrl);
 
         response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task GetAllLockers_WithQuery_ReturnsOkResult()
+    {
+        var response = await _client.GetAsync($"{BaseUrl}?page=1");
+
+        response.EnsureSuccessStatusCode();
+    }
+    
+    [Fact]
+    public async Task GetAllLockers_WithQuery_ReturnsBadRequest()
+    {
+        var response = await _client.GetAsync($"{BaseUrl}?page=0");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -66,12 +52,23 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
         
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task CreateLocker_ReturnsCreatedResult()
     {
-        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", _testLocker);
+        // Arrange
+        CreateLockerDto newLocker = new()
+        {
+            Code = "WAS-002",
+            Address = "1600 Pennsylvania Avenue NW",
+            City = "Washington DC",
+            PostalCode = "20500 USA"
+        };
+        
+        // Act
+        var response = await _client.PostAsJsonAsync($"{BaseUrl}/create", newLocker);
 
+        // Assert
         response.EnsureSuccessStatusCode();
     }
 
@@ -82,29 +79,90 @@ public class LockerApiTest : IClassFixture<WebApplicationFactory<Program>>
         
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
-
-    [Fact]
-    public async Task CreateLockerBoxes_ReturnsCreatedResult()
-    {
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/1/boxes", _lockerBoxes);
-
-        response.EnsureSuccessStatusCode();
-    }
-
-    [Fact]
-    public async Task EditLockerBox_ReturnsOkResult()
-    {
-        EditLockerDto lockerDto = new() { Address = "800 Southern Ave SE" };
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", lockerDto);
-
-        response.EnsureSuccessStatusCode();
-    }
+    
     
     [Fact]
-    public async Task EditLockerBox_ReturnsBadRequest()
+    public async Task EditLocker_ReturnsOkResult()
     {
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", new EditLockerDto());
+        // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "EDT-001",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
+    
+        var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
+        EditLockerDto editLocker = new()
+        {
+            Address = "800 Southern Ave SE"
+        };
+    
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{idToEdit}/edit", editLocker);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task EditLocker_ReturnsBadRequest()
+    {
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/1/edit", new CreateLockerDto());
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task EditLocker_ReturnsNotFound()
+    {
+        // Arrange
+        EditLockerDto editLocker = new()
+        {
+            Address = "800 Southern Ave SE"
+        };
+        
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/0/edit", editLocker);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteLocker_ReturnsNoContent()
+    {
+        // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "DEL-001",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
+    
+        var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
+        var response = await _client.DeleteAsync($"{BaseUrl}/{idToEdit}");
+        
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteLocker_ReturnsNotFound()
+    {
+        var response = await _client.DeleteAsync($"{BaseUrl}/0");
+        
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

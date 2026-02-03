@@ -9,19 +9,26 @@
 
 ## Features
 
-- Create and manage parcel lockers
-- Add locker boxes with different sizes (Small, Medium, Big)
-- Retrieve locker information by ID or get all lockers
-- Update locker details
-- Input validation with FluentValidation
-- Interactive API documentation with Swagger
-- Full integration test coverage
+- **Locker Management**
+  - Create, edit and delete parcel lockers
+  - Retrieve locker information by ID or get all lockers with pagination
+  - Filter lockers by city or postal code
+- **Locker Box Management**
+  - Add locker boxes with different sizes (Small, Medium, Big)
+  - Update box occupancy status
+- **Developer Experience**
+  - Input validation with FluentValidation
+  - Interactive API documentation with Swagger
+  - Full integration test coverage
+  - Docker support for easy deployment
 
 ## Getting Started
 
 ### Prerequisites
 
 - [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
+- [PostreSQL 18](https://www.postgresql.org/download/) or later
+- [Docker](https://www.docker.com/get-started) (optional, for containerized deployment)
 
 ### Clone the Repository
 
@@ -29,6 +36,38 @@
 git clone https://github.com/pazurkota/ParcelBox.Api.git
 cd ParcelBox.Api
 ```
+
+### Running with Docker (Recommended)
+
+1. **Configure environment variables:**
+
+   Create a `.env` file in the root directory with the following content:
+
+   ```dotenv
+   DB_PASSWORD=your_secure_password
+   DB_USER=postgres
+   DB_NAME=parcelbox_db
+   ```
+
+2. **Start the containers:**
+
+   ```bash
+   docker-compose up
+   ```
+
+   This will start:
+   - PostgreSQL database on port `5432`
+   - ASP.NET Core API on port `8080`
+
+3. **Access the API:**
+
+   Open your browser and navigate to `http://localhost:8080/swagger` to view the interactive API documentation.
+
+4. **Stop the containers:**
+
+   ```bash
+   docker-compose down
+   ```
 
 ### Running Locally
 
