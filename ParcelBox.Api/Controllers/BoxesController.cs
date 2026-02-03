@@ -11,7 +11,17 @@ namespace ParcelBox.Api.Controllers;
 
 public class BoxesController(AppDbContext dbContext) : BaseController
 {
+    /// <summary>
+    /// Adds a locker boxes into locker
+    /// </summary>
+    /// <param name="lockerId">The ID of a locker</param>
+    /// <param name="createLockerBoxesDtos"></param>
+    /// <returns></returns>
     [HttpPut("add/{lockerId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddLockerBoxes(int lockerId, [FromBody] CreateLockerBoxesDtos createLockerBoxesDtos)
     {
         // return 404 if locker not found
@@ -41,7 +51,16 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         return Ok(lockerBoxes);
     }
 
+    /// <summary>
+    /// Edits the status of a locker
+    /// </summary>
+    /// <param name="requestDto"></param>
+    /// <returns></returns>
     [HttpPatch("occupied")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditLockerBoxStatus([FromQuery] EditLockerBoxStatusRequestDto requestDto)
     {
         var existingLockerBox = await dbContext.LockerBoxes
