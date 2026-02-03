@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Dtos.LockerBox;
 using ParcelBox.Api.Model;
@@ -92,21 +91,141 @@ public class BoxesApiTest(CustomWebApplicationFactory factory) : IClassFixture<C
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-/*
-    [Fact]
-    public async Task EditLockerBoxStatus_ReturnsOkResult()
-    {
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/occupied/1/1/true", "");
 
+    [Fact]
+    public async Task EditLockerBoxStatus_ReturnsOkResult_WhenSettingOccupiedToTrue()
+    {
+        // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "TST-001",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
+
+        var createLockers = new CreateLockerBoxesDtos
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Small"},
+                new() {LockerSize = "Medium"},
+                new() {LockerSize = "Big"}
+            }
+        };
+    
+        // create and check test locker
+        var createResponse = await _client.PostAsJsonAsync("api/lockers/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        // get locker id
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
+        // create new locker boxes
+        var createLockerBoxes = await _client
+            .PutAsJsonAsync($"{BaseUrl}/add/{idToEdit}", createLockers);
+        createLockerBoxes.EnsureSuccessStatusCode();
+
+        var createdLockerBoxes = await createLockerBoxes.Content.ReadFromJsonAsync<List<LockerBox>>();
+        var boxIdToEdit = createdLockerBoxes![0].Id;
+        
+        // Act
+        var response = await _client
+            .PatchAsJsonAsync($"{BaseUrl}/occupied?boxId={boxIdToEdit}&isOccupied=true", "");
+
+        // Assert
         response.EnsureSuccessStatusCode();
     }
 
     [Fact]
-    public async Task EditLockerBoxStatus_ReturnsNotFound()
+    public async Task EditLockerBoxStatus_ReturnsOkResult_WhenSettingOccupiedToFalse()
     {
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/occupied/2/1/true", "");
+        // Arrange
+        var newLocker = new CreateLockerDto
+        {
+            Code = "TST-002",
+            Address = "Test St",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
 
+        var createLockers = new CreateLockerBoxesDtos
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() {LockerSize = "Small"}
+            }
+        };
+    
+        var createResponse = await _client.PostAsJsonAsync("api/lockers/create", newLocker);
+        createResponse.EnsureSuccessStatusCode();
+        
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
+        var idToEdit = createdLocker!.Id; 
+        
+        var createLockerBoxes = await _client
+            .PutAsJsonAsync($"{BaseUrl}/add/{idToEdit}", createLockers);
+        createLockerBoxes.EnsureSuccessStatusCode();
+
+        var createdLockerBoxes = await createLockerBoxes.Content.ReadFromJsonAsync<List<LockerBox>>();
+        var boxIdToEdit = createdLockerBoxes![0].Id;
+        
+        // First set to occupied
+        await _client.PatchAsJsonAsync($"{BaseUrl}/occupied?boxId={boxIdToEdit}&isOccupied=true", "");
+        
+        // Act - set back to not occupied
+        var response = await _client
+            .PatchAsJsonAsync($"{BaseUrl}/occupied?boxId={boxIdToEdit}&isOccupied=false", "");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task EditLockerBoxStatus_ReturnsNotFound_WhenBoxIdDoesNotExist()
+    {
+        // Arrange
+        var nonExistentBoxId = 99999;
+        
+        // Act
+        var response = await _client
+            .PatchAsJsonAsync($"{BaseUrl}/occupied?boxId={nonExistentBoxId}&isOccupied=true", "");
+
+        // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-*/
+
+    [Fact]
+    public async Task EditLockerBoxStatus_ReturnsBadRequest_WhenBoxIdIsMissing()
+    {
+        // Act
+        var response = await _client
+            .PatchAsJsonAsync($"{BaseUrl}/occupied?isOccupied=true", "");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task EditLockerBoxStatus_ReturnsBadRequest_WhenBoxIdIsZero()
+    {
+        // Act
+        var response = await _client
+            .PatchAsJsonAsync($"{BaseUrl}/occupied?boxId=0&isOccupied=true", "");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task EditLockerBoxStatus_ReturnsBadRequest_WhenBoxIdIsNegative()
+    {
+        // Act
+        var response = await _client
+            .PatchAsJsonAsync($"{BaseUrl}/occupied?boxId=-1&isOccupied=true", "");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Locker;
@@ -37,19 +38,22 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         dbContext.LockerBoxes.AddRange(lockerBoxes);
         await dbContext.SaveChangesAsync();
 
+        return Ok(lockerBoxes);
+    }
+
+    [HttpPatch("occupied")]
+    public async Task<IActionResult> EditLockerBoxStatus([FromQuery] EditLockerBoxStatusRequestDto requestDto)
+    {
+        var existingLockerBox = await dbContext.LockerBoxes
+            .FirstOrDefaultAsync(x => x.Id == requestDto.BoxId);
+        
+        if (existingLockerBox == null) return NotFound();
+
+        existingLockerBox.IsOccupied = requestDto.IsOccupied;
+        
+        dbContext.Entry(existingLockerBox).State = EntityState.Modified;
+        await dbContext.SaveChangesAsync();
+        
         return Ok();
     }
-/*
-    [HttpPatch("occupied/{lockerId:int}/{boxId:int}/{isOccupied:bool}")]
-    public IActionResult EditLockerBoxStatus(int lockerId, int boxId, bool isOccupied)
-    {
-        var existingLocker = repository.GetById(lockerId);
-        if (existingLocker == null) return NotFound();
-
-        var existingBox = existingLocker.LockerBoxes.FirstOrDefault(x => x.Id == boxId);
-        if (existingBox == null) return NotFound();
-
-        return Ok(existingBox.IsOccupied = isOccupied);
-    }
-*/
 }
