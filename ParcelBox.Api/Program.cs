@@ -35,13 +35,9 @@ builder.Services.AddControllers(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    SeedData.MigrateAndSeed(services);
-}
+var entryAssemblyName = Assembly.GetEntryAssembly()?.GetName().Name;
 
-if (Assembly.GetEntryAssembly()?.GetName().Name != "Swashbuckle.AspNetCore.Cli")
+if (entryAssemblyName != "dotnet-swagger")
 {
     using var scope = app.Services.CreateScope();
 
