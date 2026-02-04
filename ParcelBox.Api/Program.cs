@@ -35,7 +35,7 @@ builder.Services.AddControllers(options =>
 
 var app = builder.Build();
 
-var entryAssemblyName = Assembly.GetEntryAssembly()?.GetName().Name;
+var entryAssemblyName = Assembly.GetEntryAssembly()?.GetName().Name ?? string.Empty;
 
 if (entryAssemblyName != "dotnet-swagger")
 {
