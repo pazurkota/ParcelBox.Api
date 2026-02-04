@@ -1,11 +1,6 @@
-using System;
-using System.IO;
+using System.Reflection;
 using FluentValidation;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Model;
@@ -40,17 +35,15 @@ builder.Services.AddControllers(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+var entryAssemblyName = Assembly.GetEntryAssembly()?.GetName().Name ?? string.Empty;
+
+if (entryAssemblyName != "dotnet-swagger")
 {
+    using var scope = app.Services.CreateScope();
+
     var services = scope.ServiceProvider;
     SeedData.MigrateAndSeed(services);
 }
-
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ParcelBox.Api V1");
-});
 
 app.UseHttpsRedirection();
 app.MapControllers();

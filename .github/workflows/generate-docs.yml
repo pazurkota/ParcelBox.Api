@@ -24,11 +24,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ParcelBox.Api/ParcelBox.Api.csproj
 
-      - name: Build project
-        run: dotnet build ParcelBox.Api/ParcelBox.Api.csproj --configuration Release --no-restore --output ./build-output
+      - name: Publish project
+        run: dotnet publish ParcelBox.Api/ParcelBox.Api.csproj --configuration Release --no-restore --output ./build-output
 
       - name: Install Swagger CLI
-        run: dotnet tool install --global Swashbuckle.AspNetCore.Cli
+        run: dotnet tool install --global Swashbuckle.AspNetCore.Cli --version 10.1.0
 
       - name: Generate Swagger JSON
         run: swagger tofile --output swagger.json ./build-output/ParcelBox.Api.dll v1
