@@ -29,7 +29,7 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         
         var parcels = await query.ToArrayAsync();
 
-        return Ok(parcels.Select(ParcelToGetParcelDto));
+        return Ok(parcels.Select(ParcelMapper.ParcelToGetParcelDto));
     }
     
     [HttpGet("{id:int}")]
@@ -38,22 +38,7 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         var parcel = await dbContext.Parcels.SingleOrDefaultAsync(x => x.Id == id);
         if (parcel is null) return NotFound();
 
-        var existingParcel = ParcelToGetParcelDto(parcel);
+        var existingParcel = ParcelMapper.ParcelToGetParcelDto(parcel);
         return Ok(existingParcel);
-    }
-
-    private static GetParcelDto ParcelToGetParcelDto(Parcel parcel)
-    {
-        return new GetParcelDto
-        {
-            PickupCode = parcel.PickupCode,
-            ParcelSize = parcel.ParcelSize.ToString(),
-            
-            InitialLockerId = parcel.InitialLockerId,
-            TargetLockerId = parcel.TargetLockerId,
-            
-            InitialLockerBoxId = parcel.InitialLockerBoxId,
-            TargetLockerBoxId = parcel.TargetLockerBoxId
-        };
     }
 }

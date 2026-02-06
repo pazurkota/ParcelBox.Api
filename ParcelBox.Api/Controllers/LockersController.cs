@@ -47,7 +47,7 @@ public class LockersController(AppDbContext dbContext)
         
         var lockers = await query.ToArrayAsync();
         
-        return Ok(lockers.Select(LockersToGetLockersRequestDto));
+        return Ok(lockers.Select(LockerMapper.LockersToGetLockersRequestDto));
     }
 
  
@@ -68,7 +68,7 @@ public class LockersController(AppDbContext dbContext)
 
         if (locker == null) return NotFound();
 
-        var existingLocker = LockersToGetLockersRequestDto(locker);
+        var existingLocker = LockerMapper.LockersToGetLockersRequestDto(locker);
         return Ok(existingLocker);
     }
 
@@ -146,25 +146,5 @@ public class LockersController(AppDbContext dbContext)
         await dbContext.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private static GetLockersDto LockersToGetLockersRequestDto(Locker locker)
-    {
-        return new GetLockersDto
-        {
-            Id = locker.Id,
-            Code = locker.Code,
-            Address = locker.Address,
-            City = locker.City,
-            PostalCode = locker.PostalCode,
-            LockerBoxes = locker.LockerBoxes
-                .Select(x => new GetLockerBoxDto()
-                {
-                    Id = x.Id,
-                    LockerSize = x.LockerSize,
-                    IsOccupied = x.IsOccupied,
-                    LockerId = x.LockerId
-                }).ToList()
-        };
     }
 }
