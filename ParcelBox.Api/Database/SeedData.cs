@@ -56,5 +56,21 @@ public static class SeedData
             context.LockerBoxes.AddRange(lockerBoxes);
             context.SaveChanges();
         }
+        
+        if (!context.Parcels.Any())
+        {
+            Parcel parcel = new()
+            {
+                PickupCode = "ABC012345",
+                ParcelSize = Size.Small,
+                InitialLockerId = 1,
+                TargetLockerId = 2,
+                InitialLockerBoxId = 3,
+                TargetLockerBoxId = 5
+            };
+
+            context.Parcels.Add(parcel);
+            context.SaveChanges();
+        }
     }
 }
