@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Parcel;
 using ParcelBox.Api.Model;
+using ParcelBox.Api.Services;
 
 namespace ParcelBox.Api.Controllers;
 
@@ -40,5 +41,49 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
 
         var existingParcel = ParcelMapper.ParcelToGetParcelDto(parcel);
         return Ok(existingParcel);
+    }
+    
+    // @TODO create a CreateParcel function with HTTP post request 
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateParcel([FromBody] CreateParcelDto createDto)
+    {
+        var lockerBoxesIds = await ParcelService
+                .SetLockerBoxes(dbContext, createDto.InitialLockerId, createDto.TargetLockerId);
+
+        if (!Enum.TryParse<Size>(createDto.ParcelSize, ignoreCase: true, out var size))
+        {
+            return BadRequest($"Invalid parcel size value: '{createDto.ParcelSize}'.");
+        }
+        
+        Parcel newParcel = new()
+        {
+            PickupCode = ParcelService.GenerateParcelCode(),
+            ParcelSize = size,
+            
+            InitialLockerId = createDto.InitialLockerId,
+            TargetLockerId = createDto.TargetLockerId,
+            
+            InitialLockerBoxId = lockerBoxesIds.initalLockerBoxId,
+            TargetLockerBoxId = lockerBoxesIds.targetLockerBoxId
+        };
+
+        dbContext.Parcels.Add(newParcel);
+        await dbContext.SaveChangesAsync();
+
+        GetParcelDto parcelDto = new()
+        {
+            Id = newParcel.Id,
+            
+            PickupCode = newParcel.PickupCode,
+            ParcelSize = newParcel.ParcelSize.ToString(),
+            
+            InitialLockerId = newParcel.InitialLockerId,
+            TargetLockerId = newParcel.TargetLockerId,
+            
+            InitialLockerBoxId = newParcel.InitialLockerBoxId,
+            TargetLockerBoxId = newParcel.TargetLockerBoxId
+        };
+        
+        return Created($"/parcels/{newParcel.Id}", parcelDto);
     }
 }

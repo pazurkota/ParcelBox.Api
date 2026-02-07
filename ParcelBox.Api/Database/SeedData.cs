@@ -41,7 +41,7 @@ public static class SeedData
                 new()
                 {
                     LockerSize = Size.Medium,
-                    IsOccupied = true,
+                    IsOccupied = false,
                     LockerId = locker.Id
                 },
                 
