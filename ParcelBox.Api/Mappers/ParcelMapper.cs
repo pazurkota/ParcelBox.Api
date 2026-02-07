@@ -9,6 +9,8 @@ public static class ParcelMapper
     {
         return new GetParcelDto
         {
+            Id = parcel.Id,
+            
             PickupCode = parcel.PickupCode,
             ParcelSize = parcel.ParcelSize.ToString(),
             
