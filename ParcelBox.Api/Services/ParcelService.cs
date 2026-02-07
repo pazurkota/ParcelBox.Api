@@ -21,8 +21,7 @@ public static class ParcelService
 
         return new string(code);
     }
-
-    // @TODO Fix LINQ expressions
+    
     public static async Task<(int initalLockerBoxId, int targetLockerBoxId)> SetLockerBoxes
         (AppDbContext context, int initId, int targetId)
     {
@@ -45,5 +44,19 @@ public static class ParcelService
             throw new NoNullAllowedException("Target locker box is null");
         
         return (initLockerBoxId.Id, targetLockerBoxId.Id);
+    }
+
+    public static async Task ChangeLockerBoxStatusAsync(AppDbContext context, int id, bool status)
+    {
+        var lockerBox = await context.LockerBoxes
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (lockerBox is null) throw new NoNullAllowedException("Locker box not found");
+
+        lockerBox.IsOccupied = status;
+        
+        context.Entry(lockerBox).State = EntityState.Modified;
+        await context.SaveChangesAsync();
     }
 }

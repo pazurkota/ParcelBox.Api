@@ -43,7 +43,6 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         return Ok(existingParcel);
     }
     
-    // @TODO create a CreateParcel function with HTTP post request 
     [HttpPost("create")]
     public async Task<IActionResult> CreateParcel([FromBody] CreateParcelDto createDto)
     {
@@ -69,6 +68,9 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
 
         dbContext.Parcels.Add(newParcel);
         await dbContext.SaveChangesAsync();
+
+        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, lockerBoxesIds.initalLockerBoxId, true);
+        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, lockerBoxesIds.targetLockerBoxId, true);
 
         GetParcelDto parcelDto = new()
         {
