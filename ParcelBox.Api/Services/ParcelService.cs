@@ -22,7 +22,7 @@ public static class ParcelService
         return new string(code);
     }
     
-    public static async Task<(int initalLockerBoxId, int targetLockerBoxId)> SetLockerBoxes
+    public static async Task<(int? initalLockerBoxId, int? targetLockerBoxId)> SetLockerBoxes
         (AppDbContext context, int initId, int targetId)
     {
         var initLockerBoxId = await context.LockerBoxes
@@ -36,16 +36,11 @@ public static class ParcelService
                 x.IsOccupied == false &&
                 x.LockerId == targetId)
             .FirstOrDefaultAsync();
-
-        if (initLockerBoxId is null) 
-            throw new NoNullAllowedException("Initial locker box is null");
         
-        if (targetLockerBoxId is null) 
-            throw new NoNullAllowedException("Target locker box is null");
-        
-        return (initLockerBoxId.Id, targetLockerBoxId.Id);
+        return (initLockerBoxId?.Id, targetLockerBoxId?.Id);
     }
 
+    // put before SaveChangesAsync()
     public static async Task ChangeLockerBoxStatusAsync(AppDbContext context, int id, bool status)
     {
         var lockerBox = await context.LockerBoxes
@@ -57,6 +52,5 @@ public static class ParcelService
         lockerBox.IsOccupied = status;
         
         context.Entry(lockerBox).State = EntityState.Modified;
-        await context.SaveChangesAsync();
     }
 }

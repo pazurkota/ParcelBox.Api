@@ -9,6 +9,7 @@ namespace ParcelBox.Api.Controllers;
 
 public class ParcelsController(AppDbContext dbContext) : BaseController
 {
+    [HttpGet]
     public async Task<IActionResult> GetAllParcels([FromQuery] GetAllParcelsRequestDto requestDto)
     {
         int page = requestDto?.Page ?? 1;
@@ -53,6 +54,16 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         {
             return BadRequest($"Invalid parcel size value: '{createDto.ParcelSize}'.");
         }
+
+        if (lockerBoxesIds.initalLockerBoxId is null)
+        {
+            return BadRequest("Couldn't find any available locker boxes in initial locker");
+        }
+        
+        if (lockerBoxesIds.targetLockerBoxId is null)
+        {
+            return BadRequest("Couldn't find any available locker boxes in target locker");
+        }
         
         Parcel newParcel = new()
         {
@@ -62,15 +73,15 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
             InitialLockerId = createDto.InitialLockerId,
             TargetLockerId = createDto.TargetLockerId,
             
-            InitialLockerBoxId = lockerBoxesIds.initalLockerBoxId,
-            TargetLockerBoxId = lockerBoxesIds.targetLockerBoxId
+            InitialLockerBoxId = lockerBoxesIds.initalLockerBoxId.Value,
+            TargetLockerBoxId = lockerBoxesIds.targetLockerBoxId.Value
         };
 
+        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, lockerBoxesIds.initalLockerBoxId.Value, true);
+        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, lockerBoxesIds.targetLockerBoxId.Value, true);
+        
         dbContext.Parcels.Add(newParcel);
         await dbContext.SaveChangesAsync();
-
-        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, lockerBoxesIds.initalLockerBoxId, true);
-        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, lockerBoxesIds.targetLockerBoxId, true);
 
         GetParcelDto parcelDto = new()
         {
