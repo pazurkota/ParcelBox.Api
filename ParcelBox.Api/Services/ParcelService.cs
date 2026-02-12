@@ -22,22 +22,30 @@ public static class ParcelService
         return new string(code);
     }
     
-    public static async Task<(int? initalLockerBoxId, int? targetLockerBoxId)> SetLockerBoxes
+    public static async Task<(int? initalLockerBoxId, int? targetLockerBoxId)> SetLockerBoxesAsync
         (AppDbContext context, int initId, int targetId)
     {
-        var initLockerBoxId = await context.LockerBoxes
+        var initLockerBox = await context.LockerBoxes
             .Where(x => 
                 x.IsOccupied == false &&
                 x.LockerId == initId)
+            .OrderBy(x => x.Id)
+            .FirstOrDefaultAsync();
+
+        var targetQuery = context.LockerBoxes
+            .Where(x => 
+                x.IsOccupied == false && 
+                x.LockerId == targetId);
+
+        // ensure that init and target locker boxes are different
+        // especially if initId == targetId
+        targetQuery = targetQuery.Where(x => initLockerBox != null && x.Id != initLockerBox.Id);
+
+        var targetLockerBox = await targetQuery
+            .OrderBy(x => x.Id)
             .FirstOrDefaultAsync();
         
-        var targetLockerBoxId = await context.LockerBoxes
-            .Where(x =>
-                x.IsOccupied == false &&
-                x.LockerId == targetId)
-            .FirstOrDefaultAsync();
-        
-        return (initLockerBoxId?.Id, targetLockerBoxId?.Id);
+        return (initLockerBox?.Id, targetLockerBox?.Id);
     }
 
     // put before SaveChangesAsync()

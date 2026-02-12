@@ -48,7 +48,7 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
     public async Task<IActionResult> CreateParcel([FromBody] CreateParcelDto createDto)
     {
         var lockerBoxesIds = await ParcelService
-                .SetLockerBoxes(dbContext, createDto.InitialLockerId, createDto.TargetLockerId);
+                .SetLockerBoxesAsync(dbContext, createDto.InitialLockerId, createDto.TargetLockerId);
 
         if (!Enum.TryParse<Size>(createDto.ParcelSize, ignoreCase: true, out var size))
         {
