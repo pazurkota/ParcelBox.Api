@@ -2,7 +2,7 @@
 using ParcelBox.Api.Dtos.LockerBox;
 using ParcelBox.Api.Model;
 
-namespace ParcelBox.Api.Controllers;
+namespace ParcelBox.Api.Mappers;
 
 public static class LockerMapper
 {

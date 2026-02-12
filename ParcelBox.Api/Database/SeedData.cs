@@ -61,7 +61,7 @@ public static class SeedData
         {
             Parcel parcel = new()
             {
-                PickupCode = "ABC012345",
+                PickupCode = "ABC00000",
                 ParcelSize = Size.Small,
                 InitialLockerId = 1,
                 TargetLockerId = 2,
