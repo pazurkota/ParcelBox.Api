@@ -42,7 +42,7 @@ if (entryAssemblyName != "dotnet-swagger")
     using var scope = app.Services.CreateScope();
 
     var services = scope.ServiceProvider;
-    SeedData.MigrateAndSeed(services);
+    MigrateAndSeedData.MigrateAndSeed(services);
 }
 
 app.UseHttpsRedirection();
