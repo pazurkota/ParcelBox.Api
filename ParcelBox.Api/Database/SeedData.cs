@@ -10,24 +10,36 @@ public static class SeedData
         var context = provider.GetRequiredService<AppDbContext>();
         
         context.Database.Migrate();
-        
-        var locker = context.Lockers.FirstOrDefault(x => x.Code == "WAS-001");
 
-        if (locker == null)
+        List<Locker> lockers = new();
+        
+        if (!context.Lockers.Any())
         {
-            locker = new Locker
+            lockers = new()
             {
-                Address = "1400 Defense Pentagon",
-                City = "Washington DC",
-                PostalCode = "20301 USA",
-                Code = "WAS-001",
+                new()
+                {
+                    Address = "1400 Defense Pentagon",
+                    City = "Washington DC",
+                    PostalCode = "20301 USA",
+                    Code = "WAS-001",
+                },
+                new()
+                {
+                    Address = "608 Rhode Island Ave",
+                    City = "Washington DC",
+                    PostalCode = "20002 USA",
+                    Code = "WAS-002",
+                },
             };
             
-            context.Lockers.Add(locker);
+            context.Lockers.AddRange(lockers);
             context.SaveChanges();
         }
         
-        if (!context.LockerBoxes.Any(x => x.LockerId == locker.Id))
+        if (lockers.Count >= 2 && 
+            !context.LockerBoxes.Any(x => x.LockerId == lockers[0].Id) &&
+            !context.LockerBoxes.Any(x => x.LockerId == lockers[1].Id))
         {
             List<LockerBox> lockerBoxes = new()
             {
@@ -35,21 +47,42 @@ public static class SeedData
                 {
                     LockerSize = Size.Small,
                     IsOccupied = false,
-                    LockerId = locker.Id
+                    LockerId = lockers[0].Id
                 },
                 
                 new()
                 {
                     LockerSize = Size.Medium,
                     IsOccupied = false,
-                    LockerId = locker.Id
+                    LockerId = lockers[0].Id
                 },
                 
                 new()
                 {
                     LockerSize = Size.Big,
                     IsOccupied = false,
-                    LockerId = locker.Id
+                    LockerId = lockers[0].Id
+                },
+                
+                new()
+                {
+                    LockerSize = Size.Small,
+                    IsOccupied = false,
+                    LockerId = lockers[1].Id
+                },
+                
+                new()
+                {
+                    LockerSize = Size.Medium,
+                    IsOccupied = false,
+                    LockerId = lockers[1].Id
+                },
+                
+                new()
+                {
+                    LockerSize = Size.Big,
+                    IsOccupied = false,
+                    LockerId = lockers[1].Id
                 }
             };
 
