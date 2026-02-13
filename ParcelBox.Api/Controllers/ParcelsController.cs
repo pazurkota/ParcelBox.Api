@@ -71,6 +71,7 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         {
             PickupCode = ParcelService.GenerateParcelCode(),
             ParcelSize = size,
+            ParcelStatus = Status.Send,
             
             InitialLockerId = createDto.InitialLockerId,
             TargetLockerId = createDto.TargetLockerId,
@@ -91,6 +92,7 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
             
             PickupCode = newParcel.PickupCode,
             ParcelSize = newParcel.ParcelSize.ToString(),
+            ParcelStatus = newParcel.ParcelStatus.ToString(),
             
             InitialLockerId = newParcel.InitialLockerId,
             TargetLockerId = newParcel.TargetLockerId,
