@@ -3,7 +3,7 @@ using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Database;
 
-public static class SeedData
+public static class MigrateAndSeedData
 {
     public static void MigrateAndSeed(IServiceProvider provider)
     {
