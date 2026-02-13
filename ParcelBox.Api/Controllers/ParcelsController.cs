@@ -17,6 +17,7 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         int numberOfRecords = requestDto?.RecordsPerPage ?? 100;
 
         var query = dbContext.Parcels
+            .OrderBy(x => x.Id)
             .Skip((page - 1) * numberOfRecords)
             .Take(numberOfRecords);
 

@@ -27,14 +27,14 @@ public static class ParcelService
     {
         var initLockerBox = await context.LockerBoxes
             .Where(x => 
-                x.IsOccupied == false &&
+                !x.IsOccupied &&
                 x.LockerId == initId)
             .OrderBy(x => x.Id)
             .FirstOrDefaultAsync();
 
         var targetQuery = context.LockerBoxes
             .Where(x => 
-                x.IsOccupied == false && 
+                !x.IsOccupied && 
                 x.LockerId == targetId);
 
         // ensure that init and target locker boxes are different
