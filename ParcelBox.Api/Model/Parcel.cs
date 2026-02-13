@@ -6,6 +6,7 @@ public class Parcel
     
     public required string PickupCode { get; set; }
     public Size ParcelSize { get; set; }
+    public Status ParcelStatus { get; set; }
     
     public int InitialLockerId { get; set; }
     public int TargetLockerId { get; set; }
