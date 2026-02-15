@@ -50,6 +50,7 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         return Ok(lockerBoxes);
     }
 
+    
     /// <summary>
     /// Edits the status of a locker
     /// </summary>
@@ -75,11 +76,20 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         return Ok();
     }
 
+    
+    /// <summary>
+    /// Deletes the locker box
+    /// </summary>
+    /// <param name="id">The ID of a locker</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}/delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteLockerBox(int id)
     {
         var existingLockerBox = await dbContext.LockerBoxes.FindAsync(id);
-        if (existingLockerBox is null) return BadRequest();
+        if (existingLockerBox is null) return NotFound();
 
         dbContext.LockerBoxes.Remove(existingLockerBox);
         await dbContext.SaveChangesAsync();
