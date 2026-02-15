@@ -103,4 +103,42 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         
         return Created($"/parcels/{newParcel.Id}", parcelDto);
     }
+    
+    [HttpPut("{id:int}/edit")]
+    public async Task<IActionResult> EditParcel(int id, [FromBody] EditParcelDto parcelDto)
+    {
+        var existingParcel = await dbContext.Parcels.FindAsync(id);
+        if (existingParcel is null) return NotFound();
+
+        var oldTargetLockerBoxId = existingParcel.TargetLockerBoxId;
+        
+        if (parcelDto.TargetLockerId is not null)
+        {
+            var newLockerBoxId =
+                await ParcelService.SetNewTargetLockerBoxAsync(dbContext, parcelDto.TargetLockerId.Value);
+
+            existingParcel.TargetLockerId = parcelDto.TargetLockerId.Value;
+            existingParcel.TargetLockerBoxId = newLockerBoxId!.Value;
+
+            await ParcelService.ChangeLockerBoxStatusAsync(dbContext, newLockerBoxId.Value, true);
+            await ParcelService.ChangeLockerBoxStatusAsync(dbContext, oldTargetLockerBoxId, false);
+            
+            dbContext.Entry(existingParcel).State = EntityState.Modified;
+        }
+
+        if (parcelDto.ParcelStatus is not null)
+        {
+            if (!Enum.TryParse<Status>(parcelDto.ParcelStatus, ignoreCase: true, out var status))
+            {
+                return BadRequest($"Invalid parcel status value: '{parcelDto.ParcelStatus}'.");
+            }
+
+            existingParcel.ParcelStatus = status;
+            dbContext.Entry(existingParcel).State = EntityState.Modified;
+        }
+        
+        await dbContext.SaveChangesAsync();
+        
+        return Ok();
+    }
 }
