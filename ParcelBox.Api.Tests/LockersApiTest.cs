@@ -5,7 +5,7 @@ using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
 
-public class LockerApiTest(CustomWebApplicationFactory factory) : IClassFixture<CustomWebApplicationFactory>
+public class LockersApiTest(CustomWebApplicationFactory factory) : IClassFixture<CustomWebApplicationFactory>
 {
     private const string BaseUrl = "api/lockers";
     private readonly HttpClient _client = factory.CreateClient();
