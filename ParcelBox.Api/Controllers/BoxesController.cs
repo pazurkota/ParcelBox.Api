@@ -65,7 +65,7 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         var existingLockerBox = await dbContext.LockerBoxes
             .FirstOrDefaultAsync(x => x.Id == requestDto.BoxId);
         
-        if (existingLockerBox == null) return NotFound();
+        if (existingLockerBox is null) return NotFound();
 
         existingLockerBox.IsOccupied = requestDto.IsOccupied;
         
@@ -73,5 +73,17 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         await dbContext.SaveChangesAsync();
         
         return Ok();
+    }
+
+    [HttpDelete("{id:int}/delete")]
+    public async Task<IActionResult> DeleteLockerBox(int id)
+    {
+        var existingLockerBox = await dbContext.LockerBoxes.FindAsync(id);
+        if (existingLockerBox is null) return BadRequest();
+
+        dbContext.LockerBoxes.Remove(existingLockerBox);
+        await dbContext.SaveChangesAsync();
+        
+        return NoContent();
     }
 }
