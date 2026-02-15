@@ -114,6 +114,9 @@ public class LockersController(AppDbContext dbContext)
     /// <param name="lockerDto">The data to be edited</param>
     /// <returns></returns>
     [HttpPut("{id:int}/edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditLocker(int id, [FromBody] EditLockerDto lockerDto)
     {
         var existingLocker = await dbContext.Lockers.FindAsync(id);

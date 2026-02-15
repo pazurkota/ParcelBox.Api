@@ -10,7 +10,14 @@ namespace ParcelBox.Api.Controllers;
 
 public class ParcelsController(AppDbContext dbContext) : BaseController
 {
+    /// <summary>
+    /// Get all parcels
+    /// </summary>
+    /// <param name="requestDto"></param>
+    /// <returns>An array of parcels</returns>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllParcels([FromQuery] GetAllParcelsRequestDto requestDto)
     {
         int page = requestDto?.Page ?? 1;
@@ -36,6 +43,15 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         return Ok(parcels.Select(ParcelMapper.ParcelToGetParcelDto));
     }
     
+    
+    /// <summary>
+    /// Gets a parcel by ID
+    /// </summary>
+    /// <param name="id">The ID of a parcel</param>
+    /// <returns>A single parcel record</returns>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetParcelById(int id)
     {
@@ -46,7 +62,16 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         return Ok(existingParcel);
     }
     
+    
+    /// <summary>
+    /// Creates a new parcel
+    /// </summary>
+    /// <param name="createDto"></param>
+    /// <returns>A link to the parcel that was created</returns>
     [HttpPost("create")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateParcel([FromBody] CreateParcelDto createDto)
     {
         var lockerBoxesIds = await ParcelService
@@ -104,7 +129,17 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         return Created($"/parcels/{newParcel.Id}", parcelDto);
     }
     
+    
+    /// <summary>
+    /// Edits the parcel
+    /// </summary>
+    /// <param name="id">The ID of a parcel</param>
+    /// <param name="parcelDto">The data to be edited</param>
+    /// <returns></returns>
     [HttpPut("{id:int}/edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditParcel(int id, [FromBody] EditParcelDto parcelDto)
     {
         var existingParcel = await dbContext.Parcels.FindAsync(id);
@@ -142,7 +177,15 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         return Ok();
     }
     
+    /// <summary>
+    /// Deletes the parcel
+    /// </summary>
+    /// <param name="id">The ID of a parcel</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}/delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteParcel(int id)
     {
         var existingParcel = await dbContext.Parcels.FindAsync(id);

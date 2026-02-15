@@ -265,10 +265,10 @@ public class BoxesApiTest(CustomWebApplicationFactory factory) : IClassFixture<C
     }
 
     [Fact]
-    public async Task DeleteLockerBox_ReturnsBadRequest_WhenBoxDoesNotExist()
+    public async Task DeleteLockerBox_ReturnsNotFound_WhenBoxDoesNotExist()
     {
         var response = await _client.DeleteAsync($"{BaseUrl}/999999/delete");
 
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }
