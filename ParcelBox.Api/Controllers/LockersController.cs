@@ -139,9 +139,18 @@ public class LockersController(AppDbContext dbContext)
     public async Task<IActionResult> DeleteLocker(int id)
     {
         var locker = await dbContext.Lockers.FindAsync(id);
-
+        
         if (locker is null) return NotFound();
 
+        var lockerBoxes = dbContext.LockerBoxes
+            .Where(x => x.LockerId == id);
+        
+        // delete every locker box before deleting locker itself
+        foreach (var lockerBox in lockerBoxes)
+        {
+            dbContext.LockerBoxes.Remove(lockerBox);
+        }
+        
         dbContext.Lockers.Remove(locker);
         await dbContext.SaveChangesAsync();
 
