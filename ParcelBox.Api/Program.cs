@@ -1,10 +1,8 @@
 using System.Reflection;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Model;
-using ParcelBox.Api.Repositories;
 using ParcelBox.Api.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +20,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString);
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
-builder.Services.AddSingleton<IRepository<Locker>, LockerRepository>();
 builder.Services.AddProblemDetails();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddControllers(options =>

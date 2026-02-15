@@ -277,4 +277,89 @@ public class ParcelsApiTest(CustomWebApplicationFactory factory) : IClassFixture
         Assert.NotNull(parcels);
         Assert.True(parcels.Count <= 2);
     }
+
+    [Fact]
+    public async Task EditParcel_UpdatesTargetLockerAndStatus()
+    {
+        // Arrange
+        var initialLockerId = await CreateLockerWithBoxesAsync();
+        var targetLockerId = await CreateLockerWithBoxesAsync();
+
+        var newParcel = new CreateParcelDto
+        {
+            ParcelSize = "Small",
+            InitialLockerId = initialLockerId,
+            TargetLockerId = targetLockerId
+        };
+
+        var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newParcel);
+        createResponse.EnsureSuccessStatusCode();
+        var createdParcel = await createResponse.Content.ReadFromJsonAsync<GetParcelDto>();
+
+        var editDto = new EditParcelDto
+        {
+            TargetLockerId = targetLockerId,
+            ParcelStatus = "OnTheWay"
+        };
+
+        // Act
+        var editResponse = await _client.PutAsJsonAsync($"{BaseUrl}/{createdParcel!.Id}/edit", editDto);
+
+        // Assert
+        editResponse.EnsureSuccessStatusCode();
+        var updatedParcelResponse = await _client.GetAsync($"{BaseUrl}/{createdParcel.Id}");
+        updatedParcelResponse.EnsureSuccessStatusCode();
+        var updatedParcel = await updatedParcelResponse.Content.ReadFromJsonAsync<GetParcelDto>();
+
+        Assert.NotNull(updatedParcel);
+        Assert.Equal("OnTheWay", updatedParcel.ParcelStatus);
+        Assert.Equal(targetLockerId, updatedParcel.TargetLockerId);
+    }
+
+    [Fact]
+    public async Task EditParcel_ReturnsNotFoundForInvalidId()
+    {
+        // Arrange
+        var editDto = new EditParcelDto
+        {
+            TargetLockerId = 9999,
+            ParcelStatus = "Delivered"
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/999999/edit", editDto);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task EditParcel_ReturnsBadRequestForInvalidStatus()
+    {
+        // Arrange
+        var initialLockerId = await CreateLockerWithBoxesAsync();
+        var targetLockerId = await CreateLockerWithBoxesAsync();
+
+        var newParcel = new CreateParcelDto
+        {
+            ParcelSize = "Small",
+            InitialLockerId = initialLockerId,
+            TargetLockerId = targetLockerId
+        };
+
+        var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newParcel);
+        createResponse.EnsureSuccessStatusCode();
+        var createdParcel = await createResponse.Content.ReadFromJsonAsync<GetParcelDto>();
+
+        var editDto = new EditParcelDto
+        {
+            ParcelStatus = "InvalidStatus"
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{createdParcel!.Id}/edit", editDto);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }

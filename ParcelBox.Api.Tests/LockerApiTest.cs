@@ -1,8 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Model;
 

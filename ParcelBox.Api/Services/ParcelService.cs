@@ -48,6 +48,18 @@ public static class ParcelService
         return (initLockerBox?.Id, targetLockerBox?.Id);
     }
 
+    public static async Task<int?> SetNewTargetLockerBoxAsync(AppDbContext context, int targetId)
+    {
+        var targetLockerBox = await context.LockerBoxes
+            .Where(x =>
+                !x.IsOccupied &&
+                x.LockerId == targetId)
+            .OrderBy(x => x.Id)
+            .FirstOrDefaultAsync();
+        
+        return targetLockerBox?.Id;
+    }
+
     // put before SaveChangesAsync()
     public static async Task ChangeLockerBoxStatusAsync(AppDbContext context, int id, bool status)
     {

@@ -13,6 +13,7 @@ public static class ParcelMapper
             
             PickupCode = parcel.PickupCode,
             ParcelSize = parcel.ParcelSize.ToString(),
+            ParcelStatus = parcel.ParcelStatus.ToString(),
             
             InitialLockerId = parcel.InitialLockerId,
             TargetLockerId = parcel.TargetLockerId,

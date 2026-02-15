@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Dtos.LockerBox;
