@@ -7,6 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Locker> Lockers { get; set; }
     public DbSet<LockerBox> LockerBoxes { get; set; }
+    public DbSet<Parcel> Parcels { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,6 +16,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .ValueGeneratedOnAdd();
 
         modelBuilder.Entity<LockerBox>()
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Parcel>()
             .Property(x => x.Id)
             .ValueGeneratedOnAdd();
     }

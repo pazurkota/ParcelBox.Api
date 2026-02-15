@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Dtos.LockerBox;
@@ -51,6 +50,7 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         return Ok(lockerBoxes);
     }
 
+    
     /// <summary>
     /// Edits the status of a locker
     /// </summary>
@@ -66,7 +66,7 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         var existingLockerBox = await dbContext.LockerBoxes
             .FirstOrDefaultAsync(x => x.Id == requestDto.BoxId);
         
-        if (existingLockerBox == null) return NotFound();
+        if (existingLockerBox is null) return NotFound();
 
         existingLockerBox.IsOccupied = requestDto.IsOccupied;
         
@@ -74,5 +74,26 @@ public class BoxesController(AppDbContext dbContext) : BaseController
         await dbContext.SaveChangesAsync();
         
         return Ok();
+    }
+
+    
+    /// <summary>
+    /// Deletes the locker box
+    /// </summary>
+    /// <param name="id">The ID of a locker</param>
+    /// <returns></returns>
+    [HttpDelete("{id:int}/delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteLockerBox(int id)
+    {
+        var existingLockerBox = await dbContext.LockerBoxes.FindAsync(id);
+        if (existingLockerBox is null) return NotFound();
+
+        dbContext.LockerBoxes.Remove(existingLockerBox);
+        await dbContext.SaveChangesAsync();
+        
+        return NoContent();
     }
 }

@@ -3,10 +3,10 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Database;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Dtos.LockerBox;
+using ParcelBox.Api.Mappers;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Controllers;
@@ -47,7 +47,7 @@ public class LockersController(AppDbContext dbContext)
         
         var lockers = await query.ToArrayAsync();
         
-        return Ok(lockers.Select(LockersToGetLockersRequestDto));
+        return Ok(lockers.Select(LockerMapper.LockersToGetLockersRequestDto));
     }
 
  
@@ -68,7 +68,7 @@ public class LockersController(AppDbContext dbContext)
 
         if (locker == null) return NotFound();
 
-        var existingLocker = LockersToGetLockersRequestDto(locker);
+        var existingLocker = LockerMapper.LockersToGetLockersRequestDto(locker);
         return Ok(existingLocker);
     }
 
@@ -114,6 +114,9 @@ public class LockersController(AppDbContext dbContext)
     /// <param name="lockerDto">The data to be edited</param>
     /// <returns></returns>
     [HttpPut("{id:int}/edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditLocker(int id, [FromBody] EditLockerDto lockerDto)
     {
         var existingLocker = await dbContext.Lockers.FindAsync(id);
@@ -139,32 +142,21 @@ public class LockersController(AppDbContext dbContext)
     public async Task<IActionResult> DeleteLocker(int id)
     {
         var locker = await dbContext.Lockers.FindAsync(id);
-
+        
         if (locker is null) return NotFound();
 
+        var lockerBoxes = dbContext.LockerBoxes
+            .Where(x => x.LockerId == id);
+        
+        // delete every locker box before deleting locker itself
+        foreach (var lockerBox in lockerBoxes)
+        {
+            dbContext.LockerBoxes.Remove(lockerBox);
+        }
+        
         dbContext.Lockers.Remove(locker);
         await dbContext.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private static GetLockersDto LockersToGetLockersRequestDto(Locker locker)
-    {
-        return new GetLockersDto
-        {
-            Id = locker.Id,
-            Code = locker.Code,
-            Address = locker.Address,
-            City = locker.City,
-            PostalCode = locker.PostalCode,
-            LockerBoxes = locker.LockerBoxes
-                .Select(x => new GetLockerBoxDto()
-                {
-                    Id = x.Id,
-                    LockerSize = x.LockerSize,
-                    IsOccupied = x.IsOccupied,
-                    LockerId = x.LockerId
-                }).ToList()
-        };
     }
 }

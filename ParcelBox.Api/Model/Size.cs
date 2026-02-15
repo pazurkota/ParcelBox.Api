@@ -2,7 +2,7 @@
 
 public enum Size
 {
-    Small,
-    Medium,
-    Big
+    Small, // 0
+    Medium, // 1
+    Big // 2
 }

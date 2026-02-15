@@ -228,4 +228,47 @@ public class BoxesApiTest(CustomWebApplicationFactory factory) : IClassFixture<C
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
+
+    [Fact]
+    public async Task DeleteLockerBox_RemovesBoxAndReturnsNoContent()
+    {
+        var newLocker = new CreateLockerDto
+        {
+            Code = "TST-002",
+            Address = "Test Address",
+            City = "Test City",
+            PostalCode = "00-000"
+        };
+
+        var createLockerResponse = await _client.PostAsJsonAsync("api/lockers/create", newLocker);
+        createLockerResponse.EnsureSuccessStatusCode();
+        var createdLocker = await createLockerResponse.Content.ReadFromJsonAsync<Locker>();
+
+        var lockerBox = new CreateLockerBoxesDtos
+        {
+            BoxDtos = new List<CreateLockerBoxDto>
+            {
+                new() { LockerSize = "Small" }
+            }
+        };
+
+        var addBoxResponse = await _client.PutAsJsonAsync($"{BaseUrl}/add/{createdLocker!.Id}", lockerBox);
+        addBoxResponse.EnsureSuccessStatusCode();
+        var createdBoxes = await addBoxResponse.Content.ReadFromJsonAsync<List<LockerBox>>();
+
+        var deleteResponse = await _client.DeleteAsync($"{BaseUrl}/{createdBoxes![0].Id}/delete");
+
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        var getResponse = await _client.GetAsync($"{BaseUrl}/{createdBoxes[0].Id}");
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteLockerBox_ReturnsNotFound_WhenBoxDoesNotExist()
+    {
+        var response = await _client.DeleteAsync($"{BaseUrl}/999999/delete");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 }

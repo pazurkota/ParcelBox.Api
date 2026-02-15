@@ -1,12 +1,12 @@
-﻿namespace ParcelBox.Api.Model;
+﻿namespace ParcelBox.Api.Dtos.Parcel;
 
-public class Parcel
+public class GetParcelDto
 {
     public int Id { get; set; }
     
     public required string PickupCode { get; set; }
-    public Size ParcelSize { get; set; }
-    public Status ParcelStatus { get; set; }
+    public required string ParcelSize { get; set; }
+    public required string ParcelStatus { get; set; }
     
     public int InitialLockerId { get; set; }
     public int TargetLockerId { get; set; }

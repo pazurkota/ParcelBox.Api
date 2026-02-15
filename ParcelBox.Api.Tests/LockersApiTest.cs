@@ -1,14 +1,11 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using ParcelBox.Api.Abstraction;
 using ParcelBox.Api.Dtos.Locker;
 using ParcelBox.Api.Model;
 
 namespace ParcelBox.Api.Tests;
 
-public class LockerApiTest(CustomWebApplicationFactory factory) : IClassFixture<CustomWebApplicationFactory>
+public class LockersApiTest(CustomWebApplicationFactory factory) : IClassFixture<CustomWebApplicationFactory>
 {
     private const string BaseUrl = "api/lockers";
     private readonly HttpClient _client = factory.CreateClient();
@@ -136,33 +133,33 @@ public class LockerApiTest(CustomWebApplicationFactory factory) : IClassFixture<
     }
 
     [Fact]
-    public async Task DeleteLocker_ReturnsNoContent()
+    public async Task DeleteLocker_RemovesLockerAndBoxes()
     {
-        // Arrange
         var newLocker = new CreateLockerDto
         {
-            Code = "DEL-001",
-            Address = "Test St",
+            Code = "TST-003",
+            Address = "Test Address",
             City = "Test City",
             PostalCode = "00-000"
         };
-    
+
         var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newLocker);
         createResponse.EnsureSuccessStatusCode();
-        
-        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>(); 
-        var idToEdit = createdLocker!.Id; 
-        
-        var response = await _client.DeleteAsync($"{BaseUrl}/{idToEdit}");
-        
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        var createdLocker = await createResponse.Content.ReadFromJsonAsync<Locker>();
+
+        var deleteResponse = await _client.DeleteAsync($"{BaseUrl}/{createdLocker!.Id}");
+
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        var getResponse = await _client.GetAsync($"{BaseUrl}/{createdLocker.Id}");
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
     [Fact]
-    public async Task DeleteLocker_ReturnsNotFound()
+    public async Task DeleteLocker_ReturnsNotFoundForNonExistentLocker()
     {
-        var response = await _client.DeleteAsync($"{BaseUrl}/0");
-        
+        var response = await _client.DeleteAsync($"{BaseUrl}/999999");
+
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }
