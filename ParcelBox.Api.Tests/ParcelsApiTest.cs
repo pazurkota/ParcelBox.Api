@@ -362,4 +362,37 @@ public class ParcelsApiTest(CustomWebApplicationFactory factory) : IClassFixture
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
+
+    [Fact]
+    public async Task DeleteParcel_RemovesParcelAndReturnsNoContent()
+    {
+        var initialLockerId = await CreateLockerWithBoxesAsync();
+        var targetLockerId = await CreateLockerWithBoxesAsync();
+
+        var newParcel = new CreateParcelDto
+        {
+            ParcelSize = "Small",
+            InitialLockerId = initialLockerId,
+            TargetLockerId = targetLockerId
+        };
+
+        var createResponse = await _client.PostAsJsonAsync($"{BaseUrl}/create", newParcel);
+        createResponse.EnsureSuccessStatusCode();
+        var createdParcel = await createResponse.Content.ReadFromJsonAsync<GetParcelDto>();
+
+        var deleteResponse = await _client.DeleteAsync($"{BaseUrl}/{createdParcel!.Id}/delete");
+
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        var getResponse = await _client.GetAsync($"{BaseUrl}/{createdParcel.Id}");
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteParcel_ReturnsNotFoundForNonExistentParcel()
+    {
+        var response = await _client.DeleteAsync($"{BaseUrl}/999999/delete");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 }

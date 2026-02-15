@@ -141,4 +141,19 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         
         return Ok();
     }
+    
+    [HttpDelete("{id:int}/delete")]
+    public async Task<IActionResult> DeleteParcel(int id)
+    {
+        var existingParcel = await dbContext.Parcels.FindAsync(id);
+        if (existingParcel is null) return NotFound();
+
+        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, existingParcel.InitialLockerBoxId, false);
+        await ParcelService.ChangeLockerBoxStatusAsync(dbContext, existingParcel.TargetLockerBoxId, false);
+
+        dbContext.Parcels.Remove(existingParcel);
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
