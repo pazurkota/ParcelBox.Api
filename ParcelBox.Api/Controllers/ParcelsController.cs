@@ -176,6 +176,25 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
         
         return Ok();
     }
+
+    [HttpPatch("{id:int}/status")]
+    public async Task<IActionResult> EditParcelStatus(int id, [FromQuery] EditParcelStatusRequestDto requestDto)
+    {
+        var existingParcel = await dbContext.Parcels.FindAsync(id);
+        if (existingParcel is null) return NotFound();
+        
+        if (!Enum.TryParse<Status>(requestDto.Status, ignoreCase: true, out var status))
+        {
+            return BadRequest($"Invalid parcel status value: '{requestDto.Status}'.");
+        }
+        
+        existingParcel.ParcelStatus = status;
+        dbContext.Entry(existingParcel).State = EntityState.Modified;
+
+        await dbContext.SaveChangesAsync();
+        
+        return Ok();
+    }
     
     /// <summary>
     /// Deletes the parcel
