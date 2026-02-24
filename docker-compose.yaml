@@ -17,7 +17,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Parcelbox.Api/Dockerfile
+      dockerfile: ParcelBox.Api/Dockerfile
       args:
         BUILD_CONFIGURATION: Release
     container_name: aspnet_app
