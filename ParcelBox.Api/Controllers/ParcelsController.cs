@@ -168,7 +168,13 @@ public class ParcelsController(AppDbContext dbContext) : BaseController
                 return BadRequest($"Invalid parcel status value: '{parcelDto.ParcelStatus}'.");
             }
 
+            if (status == Status.Send)
+            {
+                return BadRequest("New parcel status can't be send!");
+            }
+
             existingParcel.ParcelStatus = status;
+            await ParcelService.ChangeLockerBoxStatusAsync(dbContext, existingParcel.InitialLockerBoxId, true);
             dbContext.Entry(existingParcel).State = EntityState.Modified;
         }
         
